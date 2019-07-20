@@ -7,27 +7,21 @@ require "lib"
 local action = _ACTION or ""
 local outdir = action
 
-path_list={ "../lib_prj/**"}
 
-WorkSpaceInit  "libevent_cpp"
+WorkSpaceInit  "msg_forward"
 
 
-Project "libevent"
-	SrcPath	{ 
-		"../libevent-2.1.8-stable/out/include/**",  --**递归所有子目录，指定目录可用 "cc/*.cpp" 或者  "cc/**.cpp"
-	}
-	
-Project "src"
-	includedirs { 
-		"../libevent-2.1.8-stable/out/include/",
+
+Project "mf_svr"
+	IncludeFile { 
+		"../External/libevent_cpp/External/libevent-2.1.8-stable/out/include/",
+		"../External/libevent_cpp/include/",
+		"../External/svr_util/include/",
 	}
 
 	SrcPath { 
-		"../src/**",  --**递归所有子目录，指定目录可用 "cc/*.cpp" 或者  "cc/**.cpp"
-		"../include/**",
-		"../libevent-2.1.8-stable/out/include/**",
+		"../mf_svr/**",  --**递归所有子目录，指定目录可用 "cc/*.cpp" 或者  "cc/**.cpp"
 	}
-	files {"../*.sh",}
 	
 Project "test"
 	includedirs { 
