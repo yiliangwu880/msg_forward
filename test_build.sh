@@ -1,3 +1,3 @@
 cd ../../
-make
+sh build.sh
 cd -

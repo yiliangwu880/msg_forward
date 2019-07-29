@@ -27,6 +27,8 @@ LINK_DIRECTORIES(
   #项目引用第三方库
  # ${PROJECT_SOURCE_DIR}/external/lib
   ${PROJECT_SOURCE_DIR}/External/libevent_cpp/External/libevent-2.1.8-stable/out/lib
+  ${PROJECT_SOURCE_DIR}/External/svr_util/lib
+  ${PROJECT_SOURCE_DIR}/External/libevent_cpp/lib
 
   #系统目录
   /usr/local/lib
@@ -51,7 +53,6 @@ endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
-
 ADD_SUBDIRECTORY(mf_svr)
 #ADD_SUBDIRECTORY(test)
 #ADD_SUBDIRECTORY(samples)
@@ -59,25 +60,8 @@ ADD_SUBDIRECTORY(mf_svr)
 #自定义命令
 ##################################
 #ADD_CUSTOM_COMMAND(
-#     OUTPUT f1
-#     #DEPENDS f2 f3 f4*
 #	 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#     COMMAND sh build_svn_version.sh
-#     COMMENT "out put build_svn_version"
+#     COMMENT "cp mf_svr/cfg Debug/bin/ -rf"
 #           )
 #
-#ADD_CUSTOM_TARGET(t2 ALL DEPENDS f1 o1)
-# #ADD_DEPENDENCIES(server t2)
-
-# add_custom_command(
-     # OUTPUT o1
-	 # WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-     # DEPENDS  ${PROJECT_BINARY_DIR}/../f2  ${PROJECT_BINARY_DIR}/../f4*  #文件的相对路径是 ${PROJECT_SOURCE_DIR}，
-     # COMMAND cat ../f2 > o1
-	 # COMMAND echo ${PROJECT_BINARY_DIR}
-     # COMMENT "build main OUTPUT "
-           # )
-
-# ADD_CUSTOM_TARGET(t1 ALL DEPENDS o1)
-# ADD_DEPENDENCIES(server t1)
 ##################################

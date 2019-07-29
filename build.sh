@@ -11,3 +11,4 @@ echo $SVN_VERSION
 cd Debug
 cmake -DCMAKE_BUILD_TYPE=Debug -DVERSION_REVISION=$SVN_VERSION  ..
 make -j9
+cp ../mf_svr/cfg bin/ -rf
