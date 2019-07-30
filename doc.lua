@@ -18,16 +18,15 @@
 	
 msg_foward user之间通讯的消息结构：
 tcp包: len, tcp_pack.
+tcp_pack:ctrl_len,ctrl_cmd,ctrl_pack，custom_cmd, custom_pack.	
 --ctrl_len表示ctrl_cmd,ctrl_pack的总字节数。
---纯控制消息，就没有custom_cmd, custom_pack了.
-tcp_pack:ctrl_len,ctrl_cmd,ctrl_pack，custom_cmd, custom_pack.		
+--纯控制消息，就没有custom_cmd, custom_pack了.	
 --用户自定义消息包，具体协议格式自定义，可以protobuf或者其他的都行。
-custom_pack: 														
+													
 		
 server 功能：
 	可以多个msg_forward。高可用，无状态。状态改变都是来源客户端user.
 	注册服务器id
-	检查user心跳，超时注销.
 	路由消息。
 	{
 		1对1，

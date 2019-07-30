@@ -22,5 +22,5 @@ ADD_EXECUTABLE(mf_svr ${SRCS} ${SRCS2})
 #ADD_DEPENDENCIES(mf_svr svr_util libevent_cpp)
 
 # 设置链接库
-target_link_libraries(mf_svr svr_util libevent_cpp libevent.a)
+target_link_libraries(mf_svr svr_util libevent_cpp mf_proto libevent.a)
 

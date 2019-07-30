@@ -12,6 +12,11 @@ bool Server::Init()
 	return true;
 }
 
+lc::BaseConMgr & Server::GetBaseConMgr()
+{
+	return m_listener.GetConnMgr();
+}
+
 CfgMgr::CfgMgr()
 	:m_port(0)
 {

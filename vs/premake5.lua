@@ -29,6 +29,18 @@ Project "mf_svr"
 	"../External/svr_util/include/timer/*.h",
 	}
 	
+Project "mf_proto"
+	IncludeFile { 
+		"../External/svr_util/include/",
+	}
+
+	SrcPath { 
+		"../mf_proto/**",  
+	}	
+	files {
+	"../mf_proto/*.txt",
+	}
+	
 Project "test"
 	includedirs { 
 		"../include/",

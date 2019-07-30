@@ -14,9 +14,9 @@ vs浏览代码：
 	执行.\vs\run.bat,生成sln文件
 
 目录结构：
-	mf_svr ==msg forward server
-	mf_driver ==msg forward client driever。 客户端驱动库
-
+	mf_svr      ==msg forward server
+	mf_driver   ==msg forward client driever。 客户端驱动库
+	mf_proto	==msg forward  协议库
 
 
 
