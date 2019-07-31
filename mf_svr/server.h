@@ -1,9 +1,10 @@
-
+#pragma once
 #include <string>
 #include <vector>
 #include "libevent_cpp/include/include_all.h"
 #include "log_def.h"
 #include "svr_util/include/singleton.h"
+#include "svr_util/include/easy_code.h"
 #include "tcp_task.h"
 
 class Server: public Singleton<Server>
@@ -16,7 +17,7 @@ public:
 private:
 
 private:
-	lc::Listener<ConnectClient> m_listener;
+	lc::Listener<MfSvrCon> m_listener;
 
 
 };

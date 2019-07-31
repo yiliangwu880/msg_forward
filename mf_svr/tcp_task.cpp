@@ -4,7 +4,7 @@
 
 using namespace mf;
 
-ConnectClient::ConnectClient()
+MfSvrCon::MfSvrCon()
 	:m_state(S_INIT)
 	,m_user_id(0)
 	, m_cur_msg(nullptr)
@@ -12,22 +12,35 @@ ConnectClient::ConnectClient()
 
 }
 
-void ConnectClient::SetUserId(uint32 id)
+MfSvrCon::~MfSvrCon()
+{
+	if (0 != m_user_id)
+	{
+		UserMgr::Obj().UnregUser(m_user_id);
+	}
+}
+
+void MfSvrCon::SetUserId(uint32 id)
 {
 	m_user_id = id;
 }
 
-void ConnectClient::OnRecv(const lc::MsgPack &msg)
+void MfSvrCon::OnRecv(const lc::MsgPack &msg)
 {
 	m_cur_msg = &msg;
 	MsgData data;
-	L_COND(data.Parse(msg.data, msg.len));
+	L_COND(CtrlMsgProto::Parse(msg.data, msg.len, data));
 
 	if (S_INIT == m_state)
 	{
-		UserMgr::Obj().RegUser(*this, data);
+		bool r = UserMgr::Obj().RegUser(*this, data);
+		if (r)
+		{
+			m_state = S_REG;
+		}
 		return;
 	}
+	//验证，注册通过
 
 	UserMgr::Obj().DispatchMsg(*this, data);
 	

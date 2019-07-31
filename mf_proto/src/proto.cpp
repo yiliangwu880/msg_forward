@@ -1,24 +1,10 @@
 
 #include "proto.h"
 
-bool mf::MsgReqReg::Parse(const void* data, uint16 len)
-{
-	if (sizeof(this)!=len)
-	{
-		return false;
-	}
-	*this = *((MsgReqReg *)data);
-	return true;
-}
 
-void mf::MsgReqReg::Serialize(std::string &out)
-{
-	out.clear();
-	out.append((char *)this, sizeof(this));
-}
 
-//	tcp_pack : ctrl_len, ctrl_cmd, ctrl_pack£¨custom_cmd, custom_pack.
-bool mf::MsgData::Parse(const char *tcp_pack, uint16 tcp_pack_len)
+
+bool mf::MsgDataProto::Parse(const char *tcp_pack, uint16 tcp_pack_len, MsgData &msg_data)
 {
 	if (0 == tcp_pack_len || nullptr == tcp_pack)
 	{
@@ -26,64 +12,84 @@ bool mf::MsgData::Parse(const char *tcp_pack, uint16 tcp_pack_len)
 	}
 	const char *cur = tcp_pack; //∂¡»°÷∏’Î
 
-	ctrl_len = (decltype(ctrl_len))(*cur);
-	cur = cur + sizeof(ctrl_len);
-	if (0 == ctrl_len)
+	msg_data.ctrl_len = (decltype(msg_data.ctrl_len))(*cur);
+	cur = cur + sizeof(msg_data.ctrl_len);
+
+	if (tcp_pack_len < msg_data.ctrl_len)
 	{
 		return false;
 	}
 
-	ctrl_cmd = (decltype(ctrl_cmd))(*cur);
-	cur = cur + sizeof(ctrl_cmd);
-
-	if (ctrl_len > sizeof(ctrl_cmd))
+	if (msg_data.ctrl_len < sizeof(msg_data.ctrl_cmd))
 	{
-		ctrl_pack_len = ctrl_len - sizeof(ctrl_cmd);
-		ctrl_pack = cur;
+		return false;
 	}
 
+	msg_data.ctrl_cmd = (decltype(msg_data.ctrl_cmd))(*cur);
+	cur = cur + sizeof(msg_data.ctrl_cmd);
+
+	msg_data.ctrl_pack_len = msg_data.ctrl_len - sizeof(msg_data.ctrl_cmd);
+	msg_data.ctrl_pack = cur;
+
 	//point to custom
-	custom_len = tcp_pack_len - ctrl_len;
-	if (0 == custom_len)
+	msg_data.custom_len = tcp_pack_len - msg_data.ctrl_len - sizeof(msg_data.ctrl_len);
+	if (0 == msg_data.custom_len)
 	{
 		return true;
 	}
-	cur = tcp_pack + sizeof(ctrl_len) + ctrl_len;
-	if (tcp_pack_len < ctrl_len)
+	cur = tcp_pack + sizeof(msg_data.ctrl_len) + msg_data.ctrl_len;
+	msg_data.custom_pack = cur;
+	return true;
+}
+
+bool mf::MsgDataProto::Serialize(const MsgData &msg_data, std::string &tcp_pack)
+{
+	if (0 == msg_data.ctrl_len)
 	{
 		return false;
 	}
-
-	custom_cmd = (decltype(custom_cmd))(*cur);
-	cur = cur + sizeof(custom_cmd);
-
-	if (custom_len > sizeof(custom_cmd))
+	tcp_pack.clear();
+	tcp_pack.append((char *)&msg_data.ctrl_len, sizeof(msg_data.ctrl_len));
+	tcp_pack.append((char *)&msg_data.ctrl_cmd, sizeof(msg_data.ctrl_cmd));
+	if (nullptr != msg_data.ctrl_pack)
 	{
-		custom_pack_len = custom_len - sizeof(custom_cmd);
-		custom_pack = cur;
+		tcp_pack.append(msg_data.ctrl_pack, msg_data.ctrl_pack_len);
+	}
+	if (nullptr != msg_data.custom_pack)
+	{
+		tcp_pack.append(msg_data.custom_pack, msg_data.custom_len);
 	}
 	return true;
 }
 
-
-//	tcp_pack : ctrl_len, ctrl_cmd, ctrl_pack£¨custom_cmd, custom_pack.
-bool mf::MsgData::Serialize(std::string &out)
+bool mf::MsgDataProto::Serialize(const MsgData &msg_data, char *tcp_pack, uint16 tcp_pack_len)
 {
-	if (0 == ctrl_len )
-	{
-		return false;
+	{//check illegal
+		if (0 == msg_data.ctrl_len || nullptr == tcp_pack || 0 == tcp_pack_len)
+		{
+			return false;
+		}
+		uint16 total_size = sizeof(msg_data.ctrl_len) + msg_data.ctrl_len + msg_data.custom_len;
+		if (tcp_pack_len < total_size)
+		{
+			return false;
+		}
 	}
-	out.clear();
-	out.append((char *)&ctrl_len, sizeof(ctrl_len));
-	out.append((char *)&ctrl_cmd, sizeof(ctrl_cmd));
-	if (nullptr != ctrl_pack)
+
+	char *cur = tcp_pack;
+	memcpy(cur, (char *)&msg_data.ctrl_len, sizeof(msg_data.ctrl_len));
+	cur += sizeof(msg_data.ctrl_len);
+	memcpy(cur, (char *)&msg_data.ctrl_cmd, sizeof(msg_data.ctrl_cmd));
+	cur += sizeof(msg_data.ctrl_cmd);
+	if (nullptr != msg_data.ctrl_pack)
 	{
-		out.append(ctrl_pack, ctrl_pack_len);
+		memcpy(cur, msg_data.ctrl_pack, msg_data.ctrl_pack_len);
+		cur += msg_data.ctrl_pack_len;
 	}
-	out.append((char *)&custom_cmd, sizeof(custom_cmd));
-	if (nullptr != custom_pack)
+	if (nullptr != msg_data.custom_pack)
 	{
-		out.append(custom_pack, custom_pack_len);
+		memcpy(cur, msg_data.custom_pack, msg_data.custom_len);
+		cur += msg_data.custom_len;
 	}
 	return true;
 }

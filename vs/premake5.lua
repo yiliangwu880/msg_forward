@@ -41,6 +41,18 @@ Project "mf_proto"
 	"../mf_proto/*.txt",
 	}
 	
+Project "mf_driver"
+	IncludeFile { 
+		"../External/svr_util/include/",
+	}
+
+	SrcPath { 
+		"../mf_driver/**",  
+	}	
+	files {
+	"../mf_driver/*.txt",
+	}
+	
 Project "test"
 	includedirs { 
 		"../include/",

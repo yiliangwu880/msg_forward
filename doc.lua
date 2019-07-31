@@ -1,5 +1,6 @@
 术语:
 	msg_foward : 消息转发服务器。
+	mf svr	   : 消息转发服务器。
 	user       : msg_foward的客户端，被服务器对象。客户端进程。
 	
 设计目的：
@@ -18,9 +19,9 @@
 	
 msg_foward user之间通讯的消息结构：
 tcp包: len, tcp_pack.
-tcp_pack:ctrl_len,ctrl_cmd,ctrl_pack，custom_cmd, custom_pack.	
+tcp_pack:ctrl_len,ctrl_cmd, ctrl_pack，custom_pack.	
 --ctrl_len表示ctrl_cmd,ctrl_pack的总字节数。
---纯控制消息，就没有custom_cmd, custom_pack了.	
+--纯控制消息，就没有custom_pack了.	
 --用户自定义消息包，具体协议格式自定义，可以protobuf或者其他的都行。
 													
 		
@@ -33,9 +34,9 @@ server 功能：
 		1对组
 	}
 	可靠转发，连接失败才需要反馈给客户端。 (类似tcp连接那样理解)
-	广播新注册 user到all user
-	广播断开user到all user
 	管理user信息： 组，id
+	广播新注册 user到all user（暂时不需要。 ）
+	广播断开user到all user
 	
 client driver 功能：
 	连接服务器列表

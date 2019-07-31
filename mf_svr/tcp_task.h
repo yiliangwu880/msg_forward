@@ -7,10 +7,11 @@
 #include "libevent_cpp/include/include_all.h"
 #include "../mf_proto/include/proto.h"
 
-class ConnectClient : public lc::SvrCon
+class MfSvrCon : public lc::SvrCon
 {
 public:
-	ConnectClient();
+	MfSvrCon();
+	~MfSvrCon();
 	void SetUserId(uint32 id);
 	uint32 GetUserId() { return m_user_id; }
 	//获取当前接收的tcp包
@@ -20,9 +21,6 @@ private:
 	virtual void OnRecv(const lc::MsgPack &msg) override;
 	virtual void OnConnected() override
 	{
-		//MsgPack msg;
-		//...初始化msg
-		//	send_data(msg);
 	}
 
 private:
