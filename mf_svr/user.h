@@ -20,7 +20,7 @@ public:
 	bool SendMfMsg(mf::MsgData &msg_data);
 
 	template<class CtrlMsg>
-	bool Send(mf::MsgCmd cmd, const CtrlMsg &send);
+	bool Send(mf::Cmd cmd, const CtrlMsg &send);
 
 	bool SendLcMsg(const lc::MsgPack &msg_pack);
 
@@ -38,25 +38,22 @@ typedef void (*HandleMsg)(User &user, MfSvrCon &con, const mf::MsgData &msg);
 class UserMgr : public Singleton<UserMgr>
 {
 public:
-	void Init();
-
 	bool RegUser(MfSvrCon &con, const mf::MsgData &msg);
 	bool UnregUser(uint32 user_id);
 	User *GetUser(uint32 user_id);
 
-	void DispatchMsg(MfSvrCon &con, const mf::MsgData &msg);
 
 private:
 	std::map<uint32, User> m_id_2_user;
-	std::map<uint16, HandleMsg> m_cmd_2_handle;
 };
+
 
 
 ////////////////////define////////////////////
 
 
 template<class CtrlMsg>
-bool User::Send(mf::MsgCmd cmd, const CtrlMsg &send)
+bool User::Send(mf::Cmd cmd, const CtrlMsg &send)
 {
 
 	std::string tcp_pack;

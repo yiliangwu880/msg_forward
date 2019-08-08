@@ -26,6 +26,7 @@ Project "mf_svr"
 	}
 	files {
 	"../*.txt",
+	"../*.lua",
 	"../External/svr_util/include/timer/*.h",
 	}
 	

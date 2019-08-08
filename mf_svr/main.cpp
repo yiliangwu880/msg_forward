@@ -4,11 +4,16 @@
 #include "server.h"
 #include "svr_util/include/su_mgr.h"
 #include "svr_util/include/single_progress.h"
-
-
+#include "user.h"
+#include "MsgDispatch.h"
 
 using namespace su;
 using namespace std;
+
+
+{//test
+
+}
 
 class MyLog : public lc::ILogPrinter, public Singleton<MyLog>
 {
@@ -20,7 +25,6 @@ public:
 	
 private:
 	su::DefaultLog m_log;
-
 };
 
 
@@ -29,8 +33,24 @@ void OnExitProccess()
 	L_DEBUG("OnExitProccess");
 
 }
+namespace{
+bool Init()
+{
+	{//Çý¶¯su::timer
+		static lc::Timer loop_tm;
+		auto fun = std::bind(&SuMgr::OnTimer, &SuMgr::Obj());
+		loop_tm.StartTimer(30, fun, true);
+	}
 
-
+	MsgDispatch::Obj().Init();
+	if (!Server::Obj().Init())
+	{
+		L_ERROR("server init fail");
+		return false;
+	}
+	return true;
+}
+}
 int main(int argc, char* argv[]) 
 {
 	SuMgr::Obj().Init();
@@ -45,15 +65,8 @@ int main(int argc, char* argv[])
 	}
 	lc::EventMgr::Obj().Init(&MyLog::Obj());
 
-	{//Çý¶¯su::timer
-		static lc::Timer loop_tm;
-		auto fun = std::bind(&SuMgr::OnTimer, &SuMgr::Obj());
-		loop_tm.StartTimer(30, fun, true);
-	}
-
-	if (!Server::Obj().Init())
+	if (!Init())
 	{
-		L_ERROR("server init fail");
 		return 0;
 	}
 

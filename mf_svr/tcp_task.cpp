@@ -1,6 +1,7 @@
 #include "tcp_task.h"
 #include "user.h"
 #include "group.h"
+#include "MsgDispatch.h"
 
 using namespace mf;
 
@@ -29,7 +30,7 @@ void MfSvrCon::OnRecv(const lc::MsgPack &msg)
 {
 	m_cur_msg = &msg;
 	MsgData data;
-	L_COND(CtrlMsgProto::Parse(msg.data, msg.len, data));
+	L_COND(data.Parse(msg.data, msg.len));
 
 	if (S_INIT == m_state)
 	{
@@ -42,6 +43,6 @@ void MfSvrCon::OnRecv(const lc::MsgPack &msg)
 	}
 	//验证，注册通过
 
-	UserMgr::Obj().DispatchMsg(*this, data);
+	MsgDispatch::Obj().DispatchMsg(*this, data);
 	
 }

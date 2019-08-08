@@ -27,7 +27,7 @@ private:
 	enum State
 	{
 		S_INIT, //刚连接进来，没验证
-		S_REG,//以及注册成功
+		S_REG,//已经注册成功
 	}; 
 	
 	State m_state;

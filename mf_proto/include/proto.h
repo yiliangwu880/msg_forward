@@ -1,14 +1,21 @@
-//tcp包: len, tcp_pack.
-//	tcp_pack : ctrl_len, ctrl_cmd, ctrl_pack，custom_pack.
-//	--ctrl_len表示ctrl_cmd, ctrl_pack的总字节数。
-//	--纯控制消息，就没有custom_pack了.
-//	--用户自定义消息包，具体协议格式自定义，可以protobuf或者其他的都行。
-//分三层解析
-//tcp pack
+/*
+tcp包: len, tcp_pack.
+tcp_pack:ctrl_len,ctrl_cmd, ctrl_pack，custom_pack.
+--ctrl_len表示ctrl_cmd,ctrl_pack的总字节数。
+--纯控制消息，就没有custom_pack了.
+--custom_pack 用户自定义消息包，具体协议格式自定义，比如可以用protobuf。
+分二层解析
 
-//mf::MsgData 
+2） user和user层：custom_pack	--user 之间通讯的自定义协议
 
-//ctrl msg pack. 就是具体的 MsgReqReg MsgReqForward 等
+1） user和mf层： tcp_pack  --user mf通讯协议，
+ctrl_cmd, ctrl_pack 解析出 mf::MsgData
+
+分层图：
+	user		  mf				user
+user和user层	-------------------	user和user层
+user和mf层	--- user和mf层	--	user和mf层
+*/
 
 #pragma once
 
@@ -46,19 +53,59 @@ namespace mf {
 		//用户自定义消息包
 		uint16 custom_len;  //custom_pack字节数。
 		const char *custom_pack;//可以为空，表示无消息体
+
+	public:
+		//Parse tcp pack
+		//@para uint16 tcp_pack_len, 表示tcp_pack有效长度
+		//@para MsgData &msg_data, [out]
+		bool Parse(const char *tcp_pack, uint16 tcp_pack_len);
+
+		//@para[in] const MsgData &msg_data, 
+		//@para[out] std::string &tcp_pack
+		bool Serialize(std::string &tcp_pack) const;
+		//@para[out] uint16 tcp_pack_len, 表示 tcp_pack有效字节数。
+		//@para[out] char *tcp_pack
+		//注意：高效，容易越界
+		bool Serialize(char *tcp_pack, uint16 tcp_pack_len) const;
+
+		//一步打包层tcp_pack
+		template<class CtrlMsg>
+		static bool Serialize(uint16 ctrl_cmd, const CtrlMsg &ctrl_msg, const char *custom_pack, uint16 custom_len, std::string &tcp_pack)
+		{
+			MsgData msg_data;
+			std::string ctrl_pack;
+			Serialize(ctrl_msg, ctrl_pack);
+
+			msg_data.ctrl_len = sizeof(ctrl_cmd) + ctrl_pack.length();
+			msg_data.ctrl_cmd = ctrl_cmd;
+			msg_data.ctrl_pack = ctrl_pack.c_str();
+			msg_data.ctrl_pack_len = ctrl_pack.length();
+
+			msg_data.custom_len = custom_len;
+			msg_data.custom_pack = custom_pack;
+
+			return msg_data.Serialize(tcp_pack);
+		}
 	};
 
 
 	//控制消息定义
-	enum MsgCmd : uint16
+	enum Cmd : uint16
 	{
 		CMD_NONE = 0,
 		CMD_NTF_COM,               //通用响应消息， MsgNtfCom
-		CMD_REQ_REG,		       //请求注册	MsgReqReg
-		CMD_REQ_CON,			   //请求连接User	MsgReqCon
+
+		CMD_REQ_REG,		       //请求注册 	MsgReqReg, mf注册失败，会断开客户端链接
+		CMD_RSP_REG,				//MsgNouse
+
+		CMD_REQ_CON,			   //请求连接User MsgReqCon,
+		CMD_RSP_CON,			   //MsgRspCon
+
 		CMD_REQ_FORWARD,           //请求转发给User	MsgReqForward
-		CMD_NTF_DISCON,			   //通知User连接失败 MsgNtfDiscon
-		CMD_REQ_BROADCAST,         //请求广播指定组 MsgReqBroadcast
+
+		CMD_NTF_DISCON,			   //通知User连接失败 MsgNtfDiscon. CMD_REQ_FORWARD请求失败也会导致这个响应。
+
+		CMD_REQ_BROADCAST,         //请求广播指定组 MsgReqBroadcast, mf原样发送到各个user
 	};
 
 	struct MsgNtfCom
@@ -68,10 +115,15 @@ namespace mf {
 			,is_success(false)
 			,tips_len(0)
 		{}
-		MsgCmd req_cmd; //被反馈的请求消息号
+		Cmd req_cmd; //被反馈的请求消息号
 		bool is_success;//false 表示请求失败
+
+		const char *Tips() const { return tips; }
+		bool Parse(const void* data, uint16 len);
+		void Serialize(std::string &out) const;
+	private:
 		uint16 tips_len;
-		char tips[100]; //提示
+		char tips[200]; //提示
 	};
 	struct MsgReqReg
 	{
@@ -79,8 +131,18 @@ namespace mf {
 		uint32 group_id;
 	};
 
+	struct MsgNouse
+	{
+		char n;
+	};
+
 	struct MsgReqCon
 	{
+		uint32 dst_id; //目标服务器id
+	};
+	struct MsgRspCon
+	{
+		bool is_ok;
 		uint32 dst_id; //目标服务器id
 	};
 
@@ -97,29 +159,11 @@ namespace mf {
 	};
 	struct MsgNtfDiscon
 	{
-		uint32 dst_id;
+		uint32 svr_id;
 	};
 
 
-
-	//mf::MsgData  层
-	struct MsgDataProto
-	{
-		//Parse tcp pack
-		//@para uint16 tcp_pack_len, 表示tcp_pack有效长度
-		//@para MsgData &msg_data, [out]
-		static bool Parse(const char *tcp_pack, uint16 tcp_pack_len, MsgData &msg_data);
-
-		//@para[in] const MsgData &msg_data, 
-		//@para[out] std::string &tcp_pack
-		static bool Serialize(const MsgData &msg_data, std::string &tcp_pack);
-		//@para[out] uint16 tcp_pack_len, 表示 tcp_pack有效字节数。
-		//@para[out] char *tcp_pack
-		//注意：高效，容易越界
-		static bool Serialize(const MsgData &msg_data, char *tcp_pack, uint16 tcp_pack_len);
-
-	};
-	//ctrl msg pack 层. 就是具体的 MsgReqReg MsgReqForward 等
+	//user和mf层. ctrl_pack的编码解码。 就是MsgReqReg MsgReqForward 等
 	struct CtrlMsgProto
 	{
 
@@ -127,7 +171,7 @@ namespace mf {
 		template<class CtrlMsg>
 		static bool Parse(const MsgData &msg_data, CtrlMsg &msg_ctrl)
 		{
-			return Parse<CtrlMsg>(msg_data.ctrl_pack, msg_data.ctrl_pack_len, msg_ctrl);
+			return Parse(msg_data.ctrl_pack, msg_data.ctrl_pack_len, msg_ctrl);
 		}
 		template<class CtrlMsg>
 		static bool Parse(const void* data, uint16 len, CtrlMsg &msg)
@@ -140,7 +184,6 @@ namespace mf {
 			return true;
 		}
 
-
 		template<class CtrlMsg>
 		static void Serialize(const CtrlMsg &msg, std::string &out)
 		{
@@ -148,23 +191,18 @@ namespace mf {
 			out.append((char *)&msg, sizeof(msg));
 		}
 
-		template<class CtrlMsg>
-		static bool Serialize(uint16 ctrl_cmd, const CtrlMsg &ctrl_msg, const char *custom_pack, uint16 custom_len, std::string &tcp_pack)
+		//MsgNtfCom 特例
+		template<>
+		static bool Parse(const void* data, uint16 len, MsgNtfCom &msg)
 		{
-			MsgData msg_data;
-			std::string ctrl_pack;
-			Serialize<CtrlMsg>(ctrl_msg, ctrl_pack);
-
-			msg_data.ctrl_len = sizeof(ctrl_cmd) + ctrl_pack.length();
-			msg_data.ctrl_cmd = ctrl_cmd;
-			msg_data.ctrl_pack = ctrl_pack.c_str();
-			msg_data.ctrl_pack_len = ctrl_pack.length();
-
-			msg_data.custom_len = custom_len;
-			msg_data.custom_pack = custom_pack;
-
-			return MsgDataProto::Serialize(msg_data, tcp_pack);
+			return msg.Parse(data, len);
 		}
+		template<>
+		static void Serialize(const MsgNtfCom &msg, std::string &out)
+		{
+			msg.Serialize(out);
+		}
+
 	};
 
 }
