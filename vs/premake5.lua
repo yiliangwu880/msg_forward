@@ -18,7 +18,6 @@ Project "mf_svr"
 		"../External/libevent_cpp/include/", --浏览用 cmake不用
 		"../External/svr_util/include/",--浏览用 cmake不用
 		"../External/",
-		"../include/",
 	}
 
 	SrcPath { 

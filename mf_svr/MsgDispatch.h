@@ -8,6 +8,7 @@
 
 class MfSvrCon;
 
+typedef void(*HandleMsg)(User &user, MfSvrCon &con, const mf::MsgData &msg);
 class MsgDispatch : public Singleton<MsgDispatch>
 {
 public:
@@ -16,5 +17,5 @@ public:
 	void DispatchMsg(MfSvrCon &con, const mf::MsgData &msg);
 
 private:
-	std::map<uint16, HandleMsg> m_cmd_2_handle;
+	std::map<mf::Cmd, HandleMsg> m_cmd_2_handle;
 };

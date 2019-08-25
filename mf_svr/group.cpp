@@ -18,14 +18,14 @@ bool Group::DelUser(uint32 id)
 	return cnt == 1;
 }
 
-Group * GroupMgr::GetGroup(uint32 id)
+Group * GroupMgr::GetGroup(uint32 grp_id)
 {
-	if (0 == id)
+	if (0 == grp_id)
 	{
 		return nullptr;
 	}
 
-	Group &g = m_id_2_group[id];
+	Group &g = m_id_2_group[grp_id];//没有直接创建新的
 	return &g;
 }
 

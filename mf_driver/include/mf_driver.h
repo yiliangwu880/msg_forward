@@ -42,7 +42,7 @@ namespace mf {
 		virtual void OnDisconnected() override;
 	public:
 		template<class CtrlMsg>
-		bool SendCtrlMsg(Cmd cmd, CtrlMsg msg)
+		bool SendCtrlMsg(Cmd cmd, const CtrlMsg &msg)
 		{
 			string tcp_pack;
 			if (!MsgData::Serialize(cmd, msg, nullptr, 0, tcp_pack))
@@ -79,13 +79,13 @@ namespace mf {
 		//@para vec_groupId 我的的组id列表
 		bool Init(const std::vector<MfAddr> &vec_mf_addr, uint32 svr_id, uint32 group_id = 0);
 
-		//@para const char *pack, 为user和user层：custom_pack	--user 之间通讯的自定义协议
-		bool Send(uint32 dst_id, const char *pack, uint16 pack_len);
+		//@para const char *custom_pack, 为user和user层之间通讯的自定义协议
+		bool Send(uint32 dst_id, const char *custom_pack, uint16 custom_pack_len);
 
 		//广播给指定组. 当group_id==0时，表示广播全部user。
-		void SendGroup(uint32 group_id, const char *pack, uint16 pack_len);
+		bool SendGroup(uint32 group_id, const char *custom_pack, uint16 custom_pack_len);
 
-		//连接目标user. 通过 OnUserConnected 和 OnUserDisconnected 反馈连接情况
+		//连接目标user. 通过 MfClientMgr::OnUserCon 和 MfClientMgr::OnUserDiscon 反馈连接情况
 		void ConUser(uint32 dst_id); 
 
 		//一般定时调用，尝试连接断开的mf svr.
@@ -93,9 +93,11 @@ namespace mf {
 		void TryReconMf();
 
 		uint32 GetSvrId() const { return m_svr_id; }
-		uint32 GetGroupId() const { return m_grp_id; }
+		uint32 GetGrpId() const { return m_grp_id; }
+
 	private:
-		void OnOneMfDisconnect(); //其中一个mf链接失败
+		void OnOneMfDiscon(); //其中一个mf链接失败
+		UserClient* BlSelectSvr(); //负载均衡一台mf svr
 
 	private:
 		//反馈连接mf svr list 情况。能连接任意一台都算成功。
@@ -106,25 +108,14 @@ namespace mf {
 		virtual void OnUserCon(uint32 dst_id) = 0;
 		virtual void OnUserDiscon(uint32 dst_id) = 0;//链接对方失败，或者对方主动断线，都会调用。
 		//@para src_id 发送方服务器id
-		virtual void OnRecv(uint32 src_id, const char *pack, uint16 pack_len)=0;
-
-	private:
-		UserClient* BlSelectSvr(); //负载均衡一台mf svr
+		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)=0;
 
 	private:
 		//ClientCon list
-		std::vector<UserClient*> m_vec_con;
+		std::vector<UserClient*> m_vec_con; //多个链接mf的客户端
 		uint32 m_lb_idx; //load blance轮询数
 		uint32 m_svr_id; //我的服务器id
 		uint32 m_grp_id;
 	};
 
-	class IClientParse
-	{
-	public:
-		bool Parse(const char *tcp_pack, uint16 tcp_pack_len);
-		virtual void Forward() = 0;
-
-		void SerializeCmd();
-	};
 }

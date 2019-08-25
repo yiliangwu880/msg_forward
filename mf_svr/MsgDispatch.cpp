@@ -20,7 +20,20 @@ namespace
 		MsgReqForward req;
 		bool ret = CtrlMsgProto::Parse(msg, req);
 		L_COND(ret, "parse MsgReqForward fail");
-
+		if (req.src_id != user.GetId())
+		{
+			MsgNtfCom send;
+			send.Init(CMD_REQ_FORWARD, "error src id");
+			user.Send(CMD_REQ_FORWARD, send);
+			return;
+		}
+		if (req.dst_id == 0)
+		{
+			MsgNtfCom send;
+			send.Init(CMD_REQ_FORWARD, "dst_id == 0");
+			user.Send(CMD_REQ_FORWARD, send);
+			return;
+		}
 		User *dst_user = UserMgr::Obj().GetUser(req.dst_id);
 		if (nullptr == dst_user)
 		{
@@ -53,6 +66,9 @@ namespace
 		if (0 == req.dst_id)
 		{
 			L_DEBUG("Parse_CMD_REQ_CON fail,  illegal para. dis_id==0");
+			MsgNtfCom send;
+			send.Init(CMD_REQ_CON, "dst_id == 0");
+			user.Send(CMD_RSP_CON, send);
 			return;
 		}
 
@@ -68,8 +84,8 @@ namespace
 
 		send.is_ok = true;
 		user.Send(CMD_RSP_CON, send);
-		
 	}
+
 	void EachConSend(SvrCon &con, const lc::MsgPack *pMsgPack)
 	{
 		L_COND(pMsgPack);
@@ -102,16 +118,16 @@ namespace
 		Group *group = GroupMgr::Obj().GetGroup(req.group_id);
 		L_COND(group);
 
+
+		const lc::MsgPack *pMsgPack = con.GetCurMsgPack();
+		L_COND(pMsgPack);
 		const set<uint32> &set_id = group->GetAllUser();
-		FOR_IT_CONST(set_id)
+		for(const auto v : set_id)
 		{
-			User *pUser = UserMgr::Obj().GetUser(*it);
+			User *pUser = UserMgr::Obj().GetUser(v);
 			L_COND(pUser);
 			MfSvrCon *pCon = pUser->GetConnect();
 			L_COND(pCon);
-
-			const lc::MsgPack *pMsgPack = con.GetCurMsgPack();
-			L_COND(pMsgPack);
 			pCon->SendData(*pMsgPack);
 		}
 		L_DEBUG("broadcast to group %d", req.group_id);

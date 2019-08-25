@@ -10,7 +10,6 @@ MfSvrCon::MfSvrCon()
 	,m_user_id(0)
 	, m_cur_msg(nullptr)
 {
-
 }
 
 MfSvrCon::~MfSvrCon()
@@ -39,10 +38,15 @@ void MfSvrCon::OnRecv(const lc::MsgPack &msg)
 		{
 			m_state = S_REG;
 		}
+		else
+		{
+			L_DEBUG("reg user fail");
+			DisConnect();
+		}
 		return;
 	}
 	//验证，注册通过
 
 	MsgDispatch::Obj().DispatchMsg(*this, data);
-	
+	m_cur_msg = nullptr;
 }

@@ -41,10 +41,10 @@
 	}	\
 	}while(0);
 
-#define COND_R(cond, ret)\
+#define COND_F(cond, ...)\
 	do{\
 	if(!(cond)){\
-	return ret;\
+	return false;\
 	}	\
 	}while(0);
 
@@ -53,6 +53,14 @@
 	if(!(cond))	\
 	return; \
 	}while(0);
+
+#define COND_R(cond, ret)\
+	do{\
+	if(!(cond)){\
+	return ret;\
+	}	\
+	}while(0);
+
 
 #define L_ASSERT(cond)\
 	do{\

@@ -23,7 +23,7 @@ private:
 class GroupMgr : public Singleton<GroupMgr>
 {
 public:
-	Group *GetGroup(uint32 id);
+	Group *GetGroup(uint32 grp_id);
 	bool UnregUser(uint32 user_id);
 private:
 	std::map<uint32, Group> m_id_2_group;

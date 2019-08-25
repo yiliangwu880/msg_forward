@@ -5,7 +5,7 @@
 设计目的：
 问题：一套服务器群，互相之间通讯，直接用地址互相连接，配置繁琐。
 解决方法：
-	服务器群都链接mf,消息通过mf转发。 
+	服务器群都链接mf,mf作为消息转发中心出。 
 	User的角度去看，User之间的链接概念类似tcp/ip链接，可靠传送。
 	User进程都有自己的id, 都注册到mf。
 	User进程不合适用cd,可以自己根据协议写一个客户端驱动，不难写，内容不多。
@@ -30,11 +30,11 @@ tcp_pack:ctrl_len,ctrl_cmd, ctrl_pack，custom_pack.
 2） user和user层：custom_pack	--user 之间通讯的自定义协议
 
 1） user和mf层： tcp_pack  --user mf通讯协议，
-	ctrl_cmd, ctrl_pack 解析出 mf::MsgData	
+	tcp_pack 解析出 mf::MsgData	
 
 分层图：
 	user		  mf				user
-user和user层	-------------------	user和user层
+user和user层-------------------	user和user层
 user和mf层	--- user和mf层	--	user和mf层
 }
 		

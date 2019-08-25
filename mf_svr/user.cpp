@@ -14,23 +14,16 @@ using std::placeholders::_1;
 using std::placeholders::_2;
 using std::placeholders::_3;
 
-
 bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 {
-	su::ScopeGuard sg([&] { con.DisConnect(); }); //Ê§°Ü±ØÐë¶Ï¿ª
-	
 	L_COND_F(msg.ctrl_cmd == CMD_REQ_REG);
 	MsgReqReg req;
 	{
 		bool r = CtrlMsgProto::Parse(msg, req);
 		L_COND_F(r, "MsgRegReq parse fail");	}
 	uint32 user_id = req.svr_id;
-	if (0 == user_id)
-	{
-		L_DEBUG("empty user_id");
-		
-		return false;
-	}
+	L_COND_F(0 != user_id, "empty user_id");
+
 	//add user and group 
 	{
 		auto r = m_id_2_user.insert(make_pair(user_id, User(user_id, con.GetId(), req.group_id)));
@@ -49,11 +42,10 @@ bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 		bool r = group->AddUser(user_id);
 		L_COND_F(r);
 	}
-	MsgNouse send; 
+	MsgNone send;
 	L_COND_F(Send(CMD_RSP_REG, send));
 
 	L_DEBUG("reg svr id=%d, group_id=%d", user_id, req.group_id);
-	sg.Dismiss();
 	return true;
 }
 
@@ -77,9 +69,9 @@ bool UserMgr::UnregUser(uint32 user_id)
 	//broadcast to other user
 	MsgNtfDiscon send;
 	send.svr_id = user_id;
-	FOR_IT(m_id_2_user)
+	for( auto &v : m_id_2_user)
 	{
-		User &user = it->second;
+		User &user = v.second;
 		user.Send(CMD_NTF_DISCON, send);
 	}
 	return true;
@@ -104,11 +96,6 @@ User::User(uint32 id, uint64 con_id, uint32 group_id)
 
 }
 
-void User::DispatchMsg(MfSvrCon &con, const mf::MsgData &msg)
-{
-
-}
-
 MfSvrCon * User::GetConnect()
 {
 	L_COND_R(m_con_id, nullptr);
@@ -118,17 +105,6 @@ MfSvrCon * User::GetConnect()
 	MfSvrCon *pClient = dynamic_cast<MfSvrCon *>(pCon);
 	L_COND_R(pClient, nullptr);
 	return pClient;
-}
-
-bool User::SendMfMsg(mf::MsgData &msg_data)
-{
-	string tcp_pack;
-	msg_data.Serialize(tcp_pack);
-
-	lc::MsgPack msg_pack;
-	msg_pack.Serialize(tcp_pack);
-
-	return SendLcMsg(msg_pack);
 }
 
 bool User::SendLcMsg(const lc::MsgPack &msg_pack)

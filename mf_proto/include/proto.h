@@ -56,6 +56,7 @@ namespace mf {
 
 	public:
 		//Parse tcp pack
+		//注意：MsgData 成员指向 tcp_pack的内存，tcp_pack释放后，MsgData的指针会野。
 		//@para uint16 tcp_pack_len, 表示tcp_pack有效长度
 		//@para MsgData &msg_data, [out]
 		bool Parse(const char *tcp_pack, uint16 tcp_pack_len);
@@ -68,19 +69,15 @@ namespace mf {
 		//注意：高效，容易越界
 		bool Serialize(char *tcp_pack, uint16 tcp_pack_len) const;
 
-		//一步打包层tcp_pack
+		//一步打包成tcp_pack
 		template<class CtrlMsg>
 		static bool Serialize(uint16 ctrl_cmd, const CtrlMsg &ctrl_msg, const char *custom_pack, uint16 custom_len, std::string &tcp_pack)
 		{
 			MsgData msg_data;
-			std::string ctrl_pack;
-			Serialize(ctrl_msg, ctrl_pack);
-
-			msg_data.ctrl_len = sizeof(ctrl_cmd) + ctrl_pack.length();
+			msg_data.ctrl_len = sizeof(ctrl_cmd) + sizeof(ctrl_msg);
 			msg_data.ctrl_cmd = ctrl_cmd;
-			msg_data.ctrl_pack = ctrl_pack.c_str();
-			msg_data.ctrl_pack_len = ctrl_pack.length();
-
+			msg_data.ctrl_pack = (char *)&ctrl_msg;
+			msg_data.ctrl_pack_len = sizeof(ctrl_msg);
 			msg_data.custom_len = custom_len;
 			msg_data.custom_pack = custom_pack;
 
@@ -96,7 +93,7 @@ namespace mf {
 		CMD_NTF_COM,               //通用响应消息， MsgNtfCom
 
 		CMD_REQ_REG,		       //请求注册 	MsgReqReg, mf注册失败，会断开客户端链接
-		CMD_RSP_REG,				//MsgNouse
+		CMD_RSP_REG,				//MsgNone
 
 		CMD_REQ_CON,			   //请求连接User MsgReqCon,
 		CMD_RSP_CON,			   //MsgRspCon
@@ -112,11 +109,10 @@ namespace mf {
 	{
 		MsgNtfCom()
 			:req_cmd(CMD_NONE)
-			,is_success(false)
 			,tips_len(0)
 		{}
+		void Init(Cmd cmd, const char *t);
 		Cmd req_cmd; //被反馈的请求消息号
-		bool is_success;//false 表示请求失败
 
 		const char *Tips() const { return tips; }
 		bool Parse(const void* data, uint16 len);
@@ -125,13 +121,14 @@ namespace mf {
 		uint16 tips_len;
 		char tips[200]; //提示
 	};
+
 	struct MsgReqReg
 	{
 		uint32 svr_id;
 		uint32 group_id;
 	};
 
-	struct MsgNouse
+	struct MsgNone
 	{
 		char n;
 	};
@@ -164,7 +161,7 @@ namespace mf {
 
 
 	//user和mf层. ctrl_pack的编码解码。 就是MsgReqReg MsgReqForward 等
-	struct CtrlMsgProto
+	namespace CtrlMsgProto
 	{
 
 		//ctrl msg pack通用解析

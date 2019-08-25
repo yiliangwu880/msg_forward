@@ -11,15 +11,10 @@ class Server: public Singleton<Server>
 {
 public:
 	bool Init();
-
 	lc::BaseConMgr &GetBaseConMgr();
 
 private:
-
-private:
 	lc::Listener<MfSvrCon> m_listener;
-
-
 };
 
 class CfgMgr : public Singleton<CfgMgr>
