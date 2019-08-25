@@ -45,7 +45,7 @@ void MfSvrCon::OnRecv(const lc::MsgPack &msg)
 		}
 		return;
 	}
-	//验证，注册通过
+	//楠岃瘉锛屾敞鍐岄�氳繃
 
 	MsgDispatch::Obj().DispatchMsg(*this, data);
 	m_cur_msg = nullptr;

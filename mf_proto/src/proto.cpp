@@ -2,17 +2,17 @@
 
 namespace
 {
-	//�򻯽����������ֵ���ƶ�ָ��
+	//简化解包操作。赋值并移动指针
 	template<class T>
-	void ParseCp(T &dst, (const char *)&src)
+	void ParseCp(T &dst, const char *&src)
 	{
 		dst = (decltype(dst))(*src);
 		src = src + sizeof(dst);
 	}
 
-	//�򻯴����������ֵ���ƶ�ָ��
+	//简化打包操作。赋值并移动指针
 	template<class T>
-	void SerializeCp(const T &src, (char *)&dst)
+	void SerializeCp(const T &src, char *&dst)
 	{
 		memcpy(dst, (const char *)&src, sizeof(src));
 		dst += sizeof(src);
@@ -25,7 +25,7 @@ bool mf::MsgData::Parse(const char *tcp_pack, uint16 tcp_pack_len)
 	{
 		return false;
 	}
-	const char *cur = tcp_pack; //��ȡָ��
+	const char *cur = tcp_pack; //读取指针
 
 	ParseCp(ctrl_len, cur);
 
@@ -129,7 +129,7 @@ bool mf::MsgNtfCom::Parse(const void* data, uint16 len)
 		return false;
 	}
 
-	const char *cur = data;
+	const char *cur = (const char *)data;
 
 	ParseCp(req_cmd, cur);
 	ParseCp(tips_len, cur);

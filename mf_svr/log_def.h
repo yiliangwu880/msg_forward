@@ -1,6 +1,6 @@
 /*
-	ÈÕÖ¾ºê
-	ÓÃÀ´×ö¿âÊ±£¬²»¸øÓÃ»§Ê¹ÓÃ£¬±ÜÃâÓÃ»§Ò²ÓÐlog_def.hÎÄ¼þ£¬³åÍ»¡£ ÓÃ»§¿ÉÒÔ¸´ÖÆÕâ¸öÎÄ¼þ£¬»òÕß×Ô¼º¶¨ÒåÐÂµÄºêÀ´¶¨ÒåÐÂµÄÊµÏÖ
+	æ—¥å¿—å®
+	ç”¨æ¥åšåº“æ—¶ï¼Œä¸ç»™ç”¨æˆ·ä½¿ç”¨ï¼Œé¿å…ç”¨æˆ·ä¹Ÿæœ‰log_def.hæ–‡ä»¶ï¼Œå†²çªã€‚ ç”¨æˆ·å¯ä»¥å¤åˆ¶è¿™ä¸ªæ–‡ä»¶ï¼Œæˆ–è€…è‡ªå·±å®šä¹‰æ–°çš„å®æ¥å®šä¹‰æ–°çš„å®žçŽ°
 */
 #pragma once
 #include <string>
@@ -12,9 +12,9 @@
 #define L_DEBUG(x, ...)  su::LogMgr::Obj().Printf(su::LL_DEBUG, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);
 #define L_INFO(x, ...)   su::LogMgr::Obj().Printf(su::LL_INFO, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);
 
-//¼ò»¯ifÓï¾äÐ´·¨
+//ç®€åŒ–ifè¯­å¥å†™æ³•
 
-//Ìõ¼þ·Ç·¨·µ»Øfalse
+//æ¡ä»¶éžæ³•è¿”å›žfalse
 #define L_COND_F(cond, ...)\
 	do{\
 	if(!(cond)){\
@@ -23,7 +23,7 @@
 	}	\
 	}while(0);
 
-//Ìõ¼þ·Ç·¨·µ»Ø
+//æ¡ä»¶éžæ³•è¿”å›ž
 #define L_COND(cond, ...)\
 	do{\
 	if(!(cond))	\

@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include "protocol.h"
 #include "log_def.h"
 #include "libevent_cpp/include/include_all.h"
 #include "../mf_proto/include/proto.h"
@@ -14,7 +13,7 @@ public:
 	~MfSvrCon();
 	void SetUserId(uint32 id);
 	uint32 GetUserId() { return m_user_id; }
-	//»ñÈ¡µ±Ç°½ÓÊÕµÄtcp°ü
+	//è·å–å½“å‰æ¥æ”¶çš„tcpåŒ…
 	const lc::MsgPack *GetCurMsgPack() { return m_cur_msg; }
 
 private:
@@ -26,11 +25,11 @@ private:
 private:
 	enum State
 	{
-		S_INIT, //¸ÕÁ¬½Ó½øÀ´£¬Ã»ÑéÖ¤
-		S_REG,//ÒÑ¾­×¢²á³É¹¦
+		S_INIT, //åˆšè¿æ¥è¿›æ¥ï¼Œæ²¡éªŒè¯
+		S_REG,//å·²ç»æ³¨å†ŒæˆåŠŸ
 	}; 
 	
 	State m_state;
-	uint32 m_user_id;//ÓÃ»§id,svr id.
-	const lc::MsgPack *m_cur_msg; //µ±Ç°½ÓÊÕµÄtcp°ü
+	uint32 m_user_id;//ç”¨æˆ·id,svr id.
+	const lc::MsgPack *m_cur_msg; //å½“å‰æ¥æ”¶çš„tcpåŒ…
 };

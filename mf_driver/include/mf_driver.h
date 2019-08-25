@@ -1,18 +1,18 @@
 /*
-//ÒÀÀµlibevent_cpp¿â
-ĞèÒªÏÂÃæĞ´²ÅÄÜ¹¤×÷£º
+//ä¾èµ–libevent_cppåº“
+éœ€è¦ä¸‹é¢å†™æ‰èƒ½å·¥ä½œï¼š
 
 main()
 {
 	EventMgr::Obj().Init();
 
-		µ÷ÓÃ±¾¿âµÄapi
+		è°ƒç”¨æœ¬åº“çš„api
 
 
 	EventMgr::Obj().Dispatch();
 }
 
-//ÄãÒ²¿ÉÒÔ¸ù¾İĞ­Òé£¬×Ô¼ºĞ´×Ô¶¨Òå¿Í»§¶Ë£¬¾Í²»ÒÀÀµlibevent_cpp¿âÁË.
+//ä½ ä¹Ÿå¯ä»¥æ ¹æ®åè®®ï¼Œè‡ªå·±å†™è‡ªå®šä¹‰å®¢æˆ·ç«¯ï¼Œå°±ä¸ä¾èµ–libevent_cppåº“äº†.
 */
 
 #pragma once
@@ -24,6 +24,7 @@ main()
 #include "svr_util/include/singleton.h"
 #include "svr_util/include/easy_code.h"
 #include "svr_util/include/typedef.h"
+#include "../mf_proto/include/proto.h"
 
 namespace mf {
 	class MfClientMgr;
@@ -32,11 +33,14 @@ namespace mf {
 		std::string ip;
 		uint16 port;
 	};
+
 	class UserClient : public lc::ClientCon
 	{
-		
 	public:
-		UserClient(MfClientMgr &mgr);
+		UserClient(MfClientMgr &mgr)
+		:m_mgr(mgr)
+{
+}
 		virtual void OnRecv(const lc::MsgPack &msg) override;
 		virtual void OnConnected() override;
 		virtual void OnDisconnected() override;
@@ -44,7 +48,7 @@ namespace mf {
 		template<class CtrlMsg>
 		bool SendCtrlMsg(Cmd cmd, const CtrlMsg &msg)
 		{
-			string tcp_pack;
+			std::string tcp_pack;
 			if (!MsgData::Serialize(cmd, msg, nullptr, 0, tcp_pack))
 			{
 				return false;
@@ -52,7 +56,7 @@ namespace mf {
 			return SendPack(tcp_pack);
 		}
 
-		bool SendPack(const string &tcp_pack);
+		bool SendPack(const std::string &tcp_pack);
 
 	private:
 		void ParseNtf(const MsgNtfCom &ntf);
@@ -63,7 +67,7 @@ namespace mf {
 
 	class MfClientMgr
 	{
-		friend class UserClient
+		friend class UserClient;
 	public:
 		MfClientMgr() 
 			:m_lb_idx(0)
@@ -74,47 +78,47 @@ namespace mf {
 		~MfClientMgr();
 
 		//connect mf svr list. connect
-		//@para vec_svr_addr, ·şÎñÆ÷µØÖ·ÁĞ±í
-		//@para svr_id ÎÒµÄ·şÎñÆ÷id
-		//@para vec_groupId ÎÒµÄµÄ×éidÁĞ±í
+		//@para vec_svr_addr, æœåŠ¡å™¨åœ°å€åˆ—è¡¨
+		//@para svr_id æˆ‘çš„æœåŠ¡å™¨id
+		//@para vec_groupId æˆ‘çš„çš„ç»„idåˆ—è¡¨
 		bool Init(const std::vector<MfAddr> &vec_mf_addr, uint32 svr_id, uint32 group_id = 0);
 
-		//@para const char *custom_pack, ÎªuserºÍuser²ãÖ®¼äÍ¨Ñ¶µÄ×Ô¶¨ÒåĞ­Òé
+		//@para const char *custom_pack, ä¸ºuserå’Œuserå±‚ä¹‹é—´é€šè®¯çš„è‡ªå®šä¹‰åè®®
 		bool Send(uint32 dst_id, const char *custom_pack, uint16 custom_pack_len);
 
-		//¹ã²¥¸øÖ¸¶¨×é. µ±group_id==0Ê±£¬±íÊ¾¹ã²¥È«²¿user¡£
+		//å¹¿æ’­ç»™æŒ‡å®šç»„. å½“group_id==0æ—¶ï¼Œè¡¨ç¤ºå¹¿æ’­å…¨éƒ¨userã€‚
 		bool SendGroup(uint32 group_id, const char *custom_pack, uint16 custom_pack_len);
 
-		//Á¬½ÓÄ¿±êuser. Í¨¹ı MfClientMgr::OnUserCon ºÍ MfClientMgr::OnUserDiscon ·´À¡Á¬½ÓÇé¿ö
+		//è¿æ¥ç›®æ ‡user. é€šè¿‡ MfClientMgr::OnUserCon å’Œ MfClientMgr::OnUserDiscon åé¦ˆè¿æ¥æƒ…å†µ
 		void ConUser(uint32 dst_id); 
 
-		//Ò»°ã¶¨Ê±µ÷ÓÃ£¬³¢ÊÔÁ¬½Ó¶Ï¿ªµÄmf svr.
-		//½¨Òé5ÃëÒÔÉÏµ÷ÓÃÒ»´Î¡£
+		//ä¸€èˆ¬å®šæ—¶è°ƒç”¨ï¼Œå°è¯•è¿æ¥æ–­å¼€çš„mf svr.
+		//å»ºè®®5ç§’ä»¥ä¸Šè°ƒç”¨ä¸€æ¬¡ã€‚
 		void TryReconMf();
 
 		uint32 GetSvrId() const { return m_svr_id; }
 		uint32 GetGrpId() const { return m_grp_id; }
 
 	private:
-		void OnOneMfDiscon(); //ÆäÖĞÒ»¸ömfÁ´½ÓÊ§°Ü
-		UserClient* BlSelectSvr(); //¸ºÔØ¾ùºâÒ»Ì¨mf svr
+		void OnOneMfDiscon(); //å…¶ä¸­ä¸€ä¸ªmfé“¾æ¥å¤±è´¥
+		UserClient* BlSelectSvr(); //è´Ÿè½½å‡è¡¡ä¸€å°mf svr
 
 	private:
-		//·´À¡Á¬½Ómf svr list Çé¿ö¡£ÄÜÁ¬½ÓÈÎÒâÒ»Ì¨¶¼Ëã³É¹¦¡£
+		//åé¦ˆè¿æ¥mf svr list æƒ…å†µã€‚èƒ½è¿æ¥ä»»æ„ä¸€å°éƒ½ç®—æˆåŠŸã€‚
 		virtual void OnCon() = 0;
-		//È«²¿Á¬½Ó¶¼Ê§°Ü¾Í·´À¡¡£
+		//å…¨éƒ¨è¿æ¥éƒ½å¤±è´¥å°±åé¦ˆã€‚
 		virtual void OnDiscon() = 0;
 
 		virtual void OnUserCon(uint32 dst_id) = 0;
-		virtual void OnUserDiscon(uint32 dst_id) = 0;//Á´½Ó¶Ô·½Ê§°Ü£¬»òÕß¶Ô·½Ö÷¶¯¶ÏÏß£¬¶¼»áµ÷ÓÃ¡£
-		//@para src_id ·¢ËÍ·½·şÎñÆ÷id
+		virtual void OnUserDiscon(uint32 dst_id) = 0;//é“¾æ¥å¯¹æ–¹å¤±è´¥ï¼Œæˆ–è€…å¯¹æ–¹ä¸»åŠ¨æ–­çº¿ï¼Œéƒ½ä¼šè°ƒç”¨ã€‚
+		//@para src_id å‘é€æ–¹æœåŠ¡å™¨id
 		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)=0;
 
 	private:
 		//ClientCon list
-		std::vector<UserClient*> m_vec_con; //¶à¸öÁ´½ÓmfµÄ¿Í»§¶Ë
-		uint32 m_lb_idx; //load blanceÂÖÑ¯Êı
-		uint32 m_svr_id; //ÎÒµÄ·şÎñÆ÷id
+		std::vector<UserClient*> m_vec_con; //å¤šä¸ªé“¾æ¥mfçš„å®¢æˆ·ç«¯
+		uint32 m_lb_idx; //load blanceè½®è¯¢æ•°
+		uint32 m_svr_id; //æˆ‘çš„æœåŠ¡å™¨id
 		uint32 m_grp_id;
 	};
 

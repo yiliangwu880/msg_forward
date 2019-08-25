@@ -1,20 +1,20 @@
 /*
-tcp°ü: len, tcp_pack.
-tcp_pack:ctrl_len,ctrl_cmd, ctrl_pack£¬custom_pack.
---ctrl_len±íÊ¾ctrl_cmd,ctrl_packµÄ×Ü×Ö½ÚÊı¡£
---´¿¿ØÖÆÏûÏ¢£¬¾ÍÃ»ÓĞcustom_packÁË.
---custom_pack ÓÃ»§×Ô¶¨ÒåÏûÏ¢°ü£¬¾ßÌåĞ­Òé¸ñÊ½×Ô¶¨Òå£¬±ÈÈç¿ÉÒÔÓÃprotobuf¡£
-·Ö¶ş²ã½âÎö
+tcpåŒ…: len, tcp_pack.
+tcp_pack:ctrl_len,ctrl_cmd, ctrl_packï¼Œcustom_pack.
+--ctrl_lenè¡¨ç¤ºctrl_cmd,ctrl_packçš„æ€»å­—èŠ‚æ•°ã€‚
+--çº¯æ§åˆ¶æ¶ˆæ¯ï¼Œå°±æ²¡æœ‰custom_packäº†.
+--custom_pack ç”¨æˆ·è‡ªå®šä¹‰æ¶ˆæ¯åŒ…ï¼Œå…·ä½“åè®®æ ¼å¼è‡ªå®šä¹‰ï¼Œæ¯”å¦‚å¯ä»¥ç”¨protobufã€‚
+åˆ†äºŒå±‚è§£æ
 
-2£© userºÍuser²ã£ºcustom_pack	--user Ö®¼äÍ¨Ñ¶µÄ×Ô¶¨ÒåĞ­Òé
+2ï¼‰ userå’Œuserå±‚ï¼šcustom_pack	--user ä¹‹é—´é€šè®¯çš„è‡ªå®šä¹‰åè®®
 
-1£© userºÍmf²ã£º tcp_pack  --user mfÍ¨Ñ¶Ğ­Òé£¬
-ctrl_cmd, ctrl_pack ½âÎö³ö mf::MsgData
+1ï¼‰ userå’Œmfå±‚ï¼š tcp_pack  --user mfé€šè®¯åè®®ï¼Œ
+ctrl_cmd, ctrl_pack è§£æå‡º mf::MsgData
 
-·Ö²ãÍ¼£º
+åˆ†å±‚å›¾ï¼š
 	user		  mf				user
-userºÍuser²ã	-------------------	userºÍuser²ã
-userºÍmf²ã	--- userºÍmf²ã	--	userºÍmf²ã
+userå’Œuserå±‚	-------------------	userå’Œuserå±‚
+userå’Œmfå±‚	--- userå’Œmfå±‚	--	userå’Œmfå±‚
 */
 
 #pragma once
@@ -34,7 +34,7 @@ typedef int int32;
 
 namespace mf {
 
-	//¶¼ÓÃlinux c++,ÏÈ²»ÏŞÖÆ×Ö½Ú¶ÔÆë·½Ê½
+	//éƒ½ç”¨linux c++,å…ˆä¸é™åˆ¶å­—èŠ‚å¯¹é½æ–¹å¼
 	//#pragma pack(push)
 	//#pragma pack(1)
 
@@ -46,30 +46,30 @@ namespace mf {
 		{
 			memset(this, 0, sizeof(MsgData));
 		}
-		uint16 ctrl_len; //ctrl_len±íÊ¾ctrl_cmd, ctrl_packµÄ×Ü×Ö½ÚÊı¡£
+		uint16 ctrl_len; //ctrl_lenè¡¨ç¤ºctrl_cmd, ctrl_packçš„æ€»å­—èŠ‚æ•°ã€‚
 		uint16 ctrl_cmd;
-		uint16 ctrl_pack_len; //ctrl_pack ×Ö½ÚÊı
-		const char *ctrl_pack; //¿ÉÒÔÎª¿Õ£¬±íÊ¾ÎŞÏûÏ¢Ìå
-		//ÓÃ»§×Ô¶¨ÒåÏûÏ¢°ü
-		uint16 custom_len;  //custom_pack×Ö½ÚÊı¡£
-		const char *custom_pack;//¿ÉÒÔÎª¿Õ£¬±íÊ¾ÎŞÏûÏ¢Ìå
+		uint16 ctrl_pack_len; //ctrl_pack å­—èŠ‚æ•°
+		const char *ctrl_pack; //å¯ä»¥ä¸ºç©ºï¼Œè¡¨ç¤ºæ— æ¶ˆæ¯ä½“
+		//ç”¨æˆ·è‡ªå®šä¹‰æ¶ˆæ¯åŒ…
+		uint16 custom_len;  //custom_packå­—èŠ‚æ•°ã€‚
+		const char *custom_pack;//å¯ä»¥ä¸ºç©ºï¼Œè¡¨ç¤ºæ— æ¶ˆæ¯ä½“
 
 	public:
 		//Parse tcp pack
-		//×¢Òâ£ºMsgData ³ÉÔ±Ö¸Ïò tcp_packµÄÄÚ´æ£¬tcp_packÊÍ·Åºó£¬MsgDataµÄÖ¸Õë»áÒ°¡£
-		//@para uint16 tcp_pack_len, ±íÊ¾tcp_packÓĞĞ§³¤¶È
+		//æ³¨æ„ï¼šMsgData æˆå‘˜æŒ‡å‘ tcp_packçš„å†…å­˜ï¼Œtcp_packé‡Šæ”¾åï¼ŒMsgDataçš„æŒ‡é’ˆä¼šé‡ã€‚
+		//@para uint16 tcp_pack_len, è¡¨ç¤ºtcp_packæœ‰æ•ˆé•¿åº¦
 		//@para MsgData &msg_data, [out]
 		bool Parse(const char *tcp_pack, uint16 tcp_pack_len);
 
 		//@para[in] const MsgData &msg_data, 
 		//@para[out] std::string &tcp_pack
 		bool Serialize(std::string &tcp_pack) const;
-		//@para[out] uint16 tcp_pack_len, ±íÊ¾ tcp_packÓĞĞ§×Ö½ÚÊı¡£
+		//@para[out] uint16 tcp_pack_len, è¡¨ç¤º tcp_packæœ‰æ•ˆå­—èŠ‚æ•°ã€‚
 		//@para[out] char *tcp_pack
-		//×¢Òâ£º¸ßĞ§£¬ÈİÒ×Ô½½ç
+		//æ³¨æ„ï¼šé«˜æ•ˆï¼Œå®¹æ˜“è¶Šç•Œ
 		bool Serialize(char *tcp_pack, uint16 tcp_pack_len) const;
 
-		//Ò»²½´ò°ü³Étcp_pack
+		//ä¸€æ­¥æ‰“åŒ…æˆtcp_pack
 		template<class CtrlMsg>
 		static bool Serialize(uint16 ctrl_cmd, const CtrlMsg &ctrl_msg, const char *custom_pack, uint16 custom_len, std::string &tcp_pack)
 		{
@@ -86,23 +86,23 @@ namespace mf {
 	};
 
 
-	//¿ØÖÆÏûÏ¢¶¨Òå
+	//æ§åˆ¶æ¶ˆæ¯å®šä¹‰
 	enum Cmd : uint16
 	{
 		CMD_NONE = 0,
-		CMD_NTF_COM,               //Í¨ÓÃÏìÓ¦ÏûÏ¢£¬ MsgNtfCom
+		CMD_NTF_COM,               //é€šç”¨å“åº”æ¶ˆæ¯ï¼Œ MsgNtfCom
 
-		CMD_REQ_REG,		       //ÇëÇó×¢²á 	MsgReqReg, mf×¢²áÊ§°Ü£¬»á¶Ï¿ª¿Í»§¶ËÁ´½Ó
+		CMD_REQ_REG,		       //è¯·æ±‚æ³¨å†Œ 	MsgReqReg, mfæ³¨å†Œå¤±è´¥ï¼Œä¼šæ–­å¼€å®¢æˆ·ç«¯é“¾æ¥
 		CMD_RSP_REG,				//MsgNone
 
-		CMD_REQ_CON,			   //ÇëÇóÁ¬½ÓUser MsgReqCon,
+		CMD_REQ_CON,			   //è¯·æ±‚è¿æ¥User MsgReqCon,
 		CMD_RSP_CON,			   //MsgRspCon
 
-		CMD_REQ_FORWARD,           //ÇëÇó×ª·¢¸øUser	MsgReqForward
+		CMD_REQ_FORWARD,           //è¯·æ±‚è½¬å‘ç»™User	MsgReqForward
 
-		CMD_NTF_DISCON,			   //Í¨ÖªUserÁ¬½ÓÊ§°Ü MsgNtfDiscon. CMD_REQ_FORWARDÇëÇóÊ§°ÜÒ²»áµ¼ÖÂÕâ¸öÏìÓ¦¡£
+		CMD_NTF_DISCON,			   //é€šçŸ¥Userè¿æ¥å¤±è´¥ MsgNtfDiscon. CMD_REQ_FORWARDè¯·æ±‚å¤±è´¥ä¹Ÿä¼šå¯¼è‡´è¿™ä¸ªå“åº”ã€‚
 
-		CMD_REQ_BROADCAST,         //ÇëÇó¹ã²¥Ö¸¶¨×é MsgReqBroadcast, mfÔ­Ñù·¢ËÍµ½¸÷¸öuser
+		CMD_REQ_BROADCAST,         //è¯·æ±‚å¹¿æ’­æŒ‡å®šç»„ MsgReqBroadcast, mfåŸæ ·å‘é€åˆ°å„ä¸ªuser
 	};
 
 	struct MsgNtfCom
@@ -112,14 +112,14 @@ namespace mf {
 			,tips_len(0)
 		{}
 		void Init(Cmd cmd, const char *t);
-		Cmd req_cmd; //±»·´À¡µÄÇëÇóÏûÏ¢ºÅ
+		Cmd req_cmd; //è¢«åé¦ˆçš„è¯·æ±‚æ¶ˆæ¯å·
 
 		const char *Tips() const { return tips; }
 		bool Parse(const void* data, uint16 len);
 		void Serialize(std::string &out) const;
 	private:
 		uint16 tips_len;
-		char tips[200]; //ÌáÊ¾
+		char tips[200]; //æç¤º
 	};
 
 	struct MsgReqReg
@@ -135,18 +135,18 @@ namespace mf {
 
 	struct MsgReqCon
 	{
-		uint32 dst_id; //Ä¿±ê·şÎñÆ÷id
+		uint32 dst_id; //ç›®æ ‡æœåŠ¡å™¨id
 	};
 	struct MsgRspCon
 	{
 		bool is_ok;
-		uint32 dst_id; //Ä¿±ê·şÎñÆ÷id
+		uint32 dst_id; //ç›®æ ‡æœåŠ¡å™¨id
 	};
 
 	struct MsgReqBroadcast
 	{
 		uint32 src_id;
-		uint32 group_id; //0±íÊ¾¹ã²¥È«²¿
+		uint32 group_id; //0è¡¨ç¤ºå¹¿æ’­å…¨éƒ¨
 	};
 
 	struct MsgReqForward
@@ -160,18 +160,13 @@ namespace mf {
 	};
 
 
-	//userºÍmf²ã. ctrl_packµÄ±àÂë½âÂë¡£ ¾ÍÊÇMsgReqReg MsgReqForward µÈ
+	//userå’Œmfå±‚. ctrl_packçš„ç¼–ç è§£ç ã€‚ å°±æ˜¯MsgReqReg MsgReqForward ç­‰
 	namespace CtrlMsgProto
 	{
 
-		//ctrl msg packÍ¨ÓÃ½âÎö
+		//ctrl msg packé€šç”¨è§£æ
 		template<class CtrlMsg>
-		static bool Parse(const MsgData &msg_data, CtrlMsg &msg_ctrl)
-		{
-			return Parse(msg_data.ctrl_pack, msg_data.ctrl_pack_len, msg_ctrl);
-		}
-		template<class CtrlMsg>
-		static bool Parse(const void* data, uint16 len, CtrlMsg &msg)
+		bool Parse(const void* data, uint16 len, CtrlMsg &msg)
 		{
 			if (sizeof(msg) != len)
 			{
@@ -182,24 +177,30 @@ namespace mf {
 		}
 
 		template<class CtrlMsg>
-		static void Serialize(const CtrlMsg &msg, std::string &out)
+		inline bool Parse(const MsgData &msg_data, CtrlMsg &msg_ctrl)
+		{
+			return Parse(msg_data.ctrl_pack, msg_data.ctrl_pack_len, msg_ctrl);
+		}
+
+		template<class CtrlMsg>
+		inline void Serialize(const CtrlMsg &msg, std::string &out)
 		{
 			out.clear();
 			out.append((char *)&msg, sizeof(msg));
 		}
 
-		//MsgNtfCom ÌØÀı
+		//MsgNtfCom ç‰¹ä¾‹
 		template<>
-		static bool Parse(const void* data, uint16 len, MsgNtfCom &msg)
+		inline bool Parse(const void* data, uint16 len, MsgNtfCom &msg)
 		{
 			return msg.Parse(data, len);
 		}
 		template<>
-		static void Serialize(const MsgNtfCom &msg, std::string &out)
+	  inline	void Serialize(const MsgNtfCom &msg, std::string &out)
 		{
 			msg.Serialize(out);
 		}
 
-	};
+	}
 
 }

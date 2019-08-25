@@ -9,11 +9,7 @@ using namespace su;
 using namespace mf;
 
 
-mf::UserClient(mf::MfClientMgr &mgr)
-	:m_mgr(mgr)
-{
-}
-
+ 
 void mf::UserClient::OnRecv(const lc::MsgPack &msg)
 {
 	mf::MsgData msg_data;
@@ -30,7 +26,7 @@ void mf::UserClient::OnRecv(const lc::MsgPack &msg)
 	break;
 	case CMD_RSP_REG:
 	{
-		//½ÓÊÕµ½¾ÍÊÇ³É¹¦
+		//æŽ¥æ”¶åˆ°å°±æ˜¯æˆåŠŸ
 		m_mgr.OnCon();
 	}
 	break;
@@ -82,7 +78,7 @@ bool mf::UserClient::SendPack(const string &tcp_pack)
 	L_COND_F(!tcp_pack.empty());
 	MsgPack msg_pack;
 	msg_pack.Serialize(tcp_pack);
-	return client->SendData(msg_pack);
+	return SendData(msg_pack);
 }
 
 
@@ -135,7 +131,7 @@ bool mf::MfClientMgr::Init(const vector<MfAddr> &vec_mf_addr, uint32 svr_id, uin
 	bool ret = false;
 	for(const MfAddr &addr : vec_mf_addr)
 	{
-		UserClient *p = new UserClient();
+		UserClient *p = new UserClient(*this);
 		L_COND_F(p);
 		ret = p->ConnectInit(addr.ip.c_str(), addr.port);
 		if (!ret)

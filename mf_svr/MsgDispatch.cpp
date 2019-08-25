@@ -5,6 +5,7 @@
 #include "server.h"
 #include <functional>
 #include "svr_util/include/easy_code.h"
+#include "MsgDispatch.h"
 
 using namespace mf;
 using namespace std;
@@ -46,7 +47,7 @@ namespace
 		const lc::MsgPack *pMsgPack = con.GetCurMsgPack();
 		L_COND(pMsgPack);
 
-		ret = dst_user->SendLcMsg(*pMsgPack); //‘≠—˘◊™∑¢
+		ret = dst_user->SendLcMsg(*pMsgPack); //ÂéüÊ†∑ËΩ¨Âèë
 		if (!ret)
 		{
 			MsgNtfDiscon send;
@@ -55,7 +56,7 @@ namespace
 			L_DEBUG("forward msg fail");
 			return;
 		}
-		L_DEBUG("forward msg°£ src_id, dst_id=%d %d", req.src_id, req.dst_id);
+		L_DEBUG("forward msg„ÄÇ src_id, dst_id=%d %d", req.src_id, req.dst_id);
 	}
 
 	void Parse_CMD_REQ_CON(User &user, MfSvrCon &con, const mf::MsgData &msg)
@@ -89,7 +90,7 @@ namespace
 	void EachConSend(SvrCon &con, const lc::MsgPack *pMsgPack)
 	{
 		L_COND(pMsgPack);
-		con.SendData(*pMsgPack);//‘≠—˘◊™∑¢
+		con.SendData(*pMsgPack);//ÂéüÊ†∑ËΩ¨Âèë
 	}
 
 	void BroadCastMsg(MfSvrCon &con)
@@ -148,7 +149,7 @@ void MsgDispatch::DispatchMsg(MfSvrCon &con, const mf::MsgData &msg)
 	User *user = UserMgr::Obj().GetUser(con.GetUserId());
 	L_COND(user);
 
-	auto handle_it = m_cmd_2_handle.find(msg.ctrl_cmd);
+	auto handle_it = m_cmd_2_handle.find((mf::Cmd)msg.ctrl_cmd);
 	if (handle_it == m_cmd_2_handle.end())
 	{
 		L_ERROR("find cmd handler fail. ctrl_cmd=%d", msg.ctrl_cmd);

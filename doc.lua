@@ -1,60 +1,60 @@
-ÊõÓï:
-	mf	  == msg foward, ÏûÏ¢×ª·¢·þÎñÆ÷¡£
-	user  == msg fowardµÄ¿Í»§¶Ë£¬±»·þÎñÆ÷¶ÔÏó¡£¿Í»§¶Ë½ø³Ì¡£·þÎñÆ÷ÈºµÄÆäÖÐÒ»¸ö·þÎñÆ÷½ø³Ì¡£
-	cd	  == client driver,Çý¶¯£¬¸øuser×÷Îª¿âÊ¹ÓÃ£¬¿ÉÒÔÔÙÕâ¸ö»ù´¡¿ìËÙÐ´³ö¿Í»§¶ËÁ´½ÓÓ¦ÓÃ¡£
-Éè¼ÆÄ¿µÄ£º
-ÎÊÌâ£ºÒ»Ì×·þÎñÆ÷Èº£¬»¥ÏàÖ®¼äÍ¨Ñ¶£¬Ö±½ÓÓÃµØÖ·»¥ÏàÁ¬½Ó£¬ÅäÖÃ·±Ëö¡£
-½â¾ö·½·¨£º
-	·þÎñÆ÷Èº¶¼Á´½Ómf,mf×÷ÎªÏûÏ¢×ª·¢ÖÐÐÄ³ö¡£ 
-	UserµÄ½Ç¶ÈÈ¥¿´£¬UserÖ®¼äµÄÁ´½Ó¸ÅÄîÀàËÆtcp/ipÁ´½Ó£¬¿É¿¿´«ËÍ¡£
-	User½ø³Ì¶¼ÓÐ×Ô¼ºµÄid, ¶¼×¢²áµ½mf¡£
-	User½ø³Ì²»ºÏÊÊÓÃcd,¿ÉÒÔ×Ô¼º¸ù¾ÝÐ­ÒéÐ´Ò»¸ö¿Í»§¶ËÇý¶¯£¬²»ÄÑÐ´£¬ÄÚÈÝ²»¶à¡£
+æœ¯è¯­:
+	mf	  == msg foward, æ¶ˆæ¯è½¬å‘æœåŠ¡å™¨ã€‚
+	user  == msg fowardçš„å®¢æˆ·ç«¯ï¼Œè¢«æœåŠ¡å™¨å¯¹è±¡ã€‚å®¢æˆ·ç«¯è¿›ç¨‹ã€‚æœåŠ¡å™¨ç¾¤çš„å…¶ä¸­ä¸€ä¸ªæœåŠ¡å™¨è¿›ç¨‹ã€‚
+	cd	  == client driver,é©±åŠ¨ï¼Œç»™userä½œä¸ºåº“ä½¿ç”¨ï¼Œå¯ä»¥å†è¿™ä¸ªåŸºç¡€å¿«é€Ÿå†™å‡ºå®¢æˆ·ç«¯é“¾æŽ¥åº”ç”¨ã€‚
+è®¾è®¡ç›®çš„ï¼š
+é—®é¢˜ï¼šä¸€å¥—æœåŠ¡å™¨ç¾¤ï¼Œäº’ç›¸ä¹‹é—´é€šè®¯ï¼Œç›´æŽ¥ç”¨åœ°å€äº’ç›¸è¿žæŽ¥ï¼Œé…ç½®ç¹çã€‚
+è§£å†³æ–¹æ³•ï¼š
+	æœåŠ¡å™¨ç¾¤éƒ½é“¾æŽ¥mf,mfä½œä¸ºæ¶ˆæ¯è½¬å‘ä¸­å¿ƒå‡ºã€‚ 
+	Userçš„è§’åº¦åŽ»çœ‹ï¼ŒUserä¹‹é—´çš„é“¾æŽ¥æ¦‚å¿µç±»ä¼¼tcp/ipé“¾æŽ¥ï¼Œå¯é ä¼ é€ã€‚
+	Userè¿›ç¨‹éƒ½æœ‰è‡ªå·±çš„id, éƒ½æ³¨å†Œåˆ°mfã€‚
+	Userè¿›ç¨‹ä¸åˆé€‚ç”¨cd,å¯ä»¥è‡ªå·±æ ¹æ®åè®®å†™ä¸€ä¸ªå®¢æˆ·ç«¯é©±åŠ¨ï¼Œä¸éš¾å†™ï¼Œå†…å®¹ä¸å¤šã€‚
 	
-²»ÓÃµÚÈý·½µÄÏûÏ¢¶ÓÁÐ·þÎñµÄÔ­Òò£º
-	µÚÈý·½µÄÏûÏ¢¶ÓÁÐ·þÎñÓÐactivemq¡¢rabbitmq¡¢kafka µÈ¡£
-	²»ºÏÊÊÖ±½ÓÓÃµÄÔ­Òò£º
-	mfºËÐÄ¹¦ÄÜ¾ÍÊÇÏûÏ¢¿É¿¿×ª·¢¡¢¶ø²»ÊÇÏûÏ¢¶ÓÁÐ¡£Ïà¶ÔµÚÈý·½À´Ëµ£¬Ëü¹¦ÄÜÐ¡¡¢Ñ§Ï°³É±¾µ×¡£ 
-	mf²¿Êð¿ÉÒÔ×öµÃºÜ¼òµ¥¡£
-	×ª·¢ÏûÏ¢ÓÃ£¬²»ÐèÒª´æ¿â£¬mf¿ÉÒÔ¸ü¿ì¡£
+ä¸ç”¨ç¬¬ä¸‰æ–¹çš„æ¶ˆæ¯é˜Ÿåˆ—æœåŠ¡çš„åŽŸå› ï¼š
+	ç¬¬ä¸‰æ–¹çš„æ¶ˆæ¯é˜Ÿåˆ—æœåŠ¡æœ‰activemqã€rabbitmqã€kafka ç­‰ã€‚
+	ä¸åˆé€‚ç›´æŽ¥ç”¨çš„åŽŸå› ï¼š
+	mfæ ¸å¿ƒåŠŸèƒ½å°±æ˜¯æ¶ˆæ¯å¯é è½¬å‘ã€è€Œä¸æ˜¯æ¶ˆæ¯é˜Ÿåˆ—ã€‚ç›¸å¯¹ç¬¬ä¸‰æ–¹æ¥è¯´ï¼Œå®ƒåŠŸèƒ½å°ã€å­¦ä¹ æˆæœ¬åº•ã€‚ 
+	mféƒ¨ç½²å¯ä»¥åšå¾—å¾ˆç®€å•ã€‚
+	è½¬å‘æ¶ˆæ¯ç”¨ï¼Œä¸éœ€è¦å­˜åº“ï¼Œmfå¯ä»¥æ›´å¿«ã€‚
 
 	
-mf userÖ®¼äÍ¨Ñ¶µÄÏûÏ¢½á¹¹£º
+mf userä¹‹é—´é€šè®¯çš„æ¶ˆæ¯ç»“æž„ï¼š
 {
-tcp°ü: len, tcp_pack.
-tcp_pack:ctrl_len,ctrl_cmd, ctrl_pack£¬custom_pack.	
---ctrl_len±íÊ¾ctrl_cmd,ctrl_packµÄ×Ü×Ö½ÚÊý¡£
---´¿¿ØÖÆÏûÏ¢£¬¾ÍÃ»ÓÐcustom_packÁË.	
---custom_pack ÓÃ»§×Ô¶¨ÒåÏûÏ¢°ü£¬¾ßÌåÐ­Òé¸ñÊ½×Ô¶¨Òå£¬±ÈÈç¿ÉÒÔÓÃprotobuf¡£
-·Ö¶þ²ã½âÎö
+tcpåŒ…: len, tcp_pack.
+tcp_pack:ctrl_len,ctrl_cmd, ctrl_packï¼Œcustom_pack.	
+--ctrl_lenè¡¨ç¤ºctrl_cmd,ctrl_packçš„æ€»å­—èŠ‚æ•°ã€‚
+--çº¯æŽ§åˆ¶æ¶ˆæ¯ï¼Œå°±æ²¡æœ‰custom_packäº†.	
+--custom_pack ç”¨æˆ·è‡ªå®šä¹‰æ¶ˆæ¯åŒ…ï¼Œå…·ä½“åè®®æ ¼å¼è‡ªå®šä¹‰ï¼Œæ¯”å¦‚å¯ä»¥ç”¨protobufã€‚
+åˆ†äºŒå±‚è§£æž
 
-2£© userºÍuser²ã£ºcustom_pack	--user Ö®¼äÍ¨Ñ¶µÄ×Ô¶¨ÒåÐ­Òé
+2ï¼‰ userå’Œuserå±‚ï¼šcustom_pack	--user ä¹‹é—´é€šè®¯çš„è‡ªå®šä¹‰åè®®
 
-1£© userºÍmf²ã£º tcp_pack  --user mfÍ¨Ñ¶Ð­Òé£¬
-	tcp_pack ½âÎö³ö mf::MsgData	
+1ï¼‰ userå’Œmfå±‚ï¼š tcp_pack  --user mfé€šè®¯åè®®ï¼Œ
+	tcp_pack è§£æžå‡º mf::MsgData	
 
-·Ö²ãÍ¼£º
+åˆ†å±‚å›¾ï¼š
 	user		  mf				user
-userºÍuser²ã-------------------	userºÍuser²ã
-userºÍmf²ã	--- userºÍmf²ã	--	userºÍmf²ã
+userå’Œuserå±‚-------------------	userå’Œuserå±‚
+userå’Œmfå±‚	--- userå’Œmfå±‚	--	userå’Œmfå±‚
 }
 		
-mf ¹¦ÄÜ£º
-	¿ÉÒÔ¶à¸ömf¡£¸ß¿ÉÓÃ£¬ÎÞ×´Ì¬¡£×´Ì¬¸Ä±ä¶¼ÊÇÀ´Ô´¿Í»§¶Ëuser.
-	×¢²á·þÎñÆ÷id
-	Â·ÓÉÏûÏ¢¡£
+mf åŠŸèƒ½ï¼š
+	å¯ä»¥å¤šä¸ªmfã€‚é«˜å¯ç”¨ï¼Œæ— çŠ¶æ€ã€‚çŠ¶æ€æ”¹å˜éƒ½æ˜¯æ¥æºå®¢æˆ·ç«¯user.
+	æ³¨å†ŒæœåŠ¡å™¨id
+	è·¯ç”±æ¶ˆæ¯ã€‚
 	{
-		1¶Ô1£¬
-		1¶Ô×é
+		1å¯¹1ï¼Œ
+		1å¯¹ç»„
 	}
-	¿É¿¿×ª·¢£¬Á¬½ÓÊ§°Ü²ÅÐèÒª·´À¡¸øuser¡£ (ÀàËÆtcpÁ¬½ÓÄÇÑùÀí½â)
-	¹ã²¥¶Ï¿ªuserµ½all user
-	¹ÜÀíuserÐÅÏ¢£º ×é£¬id
+	å¯é è½¬å‘ï¼Œè¿žæŽ¥å¤±è´¥æ‰éœ€è¦åé¦ˆç»™userã€‚ (ç±»ä¼¼tcpè¿žæŽ¥é‚£æ ·ç†è§£)
+	å¹¿æ’­æ–­å¼€useråˆ°all user
+	ç®¡ç†userä¿¡æ¯ï¼š ç»„ï¼Œid
 	
-client driver ¹¦ÄÜ£º
-	Á¬½Ó·þÎñÆ÷ÁÐ±í
-	¸ºÔØ¾ùºâ²ßÂÔ£º·¢ËÍÂÖÑ¯Ò»¸ö·þÎñÆ÷Ê¹ÓÃ
-	¶ÏÏßÖØÁ¬¶¨Ê±Æ÷
-	×¢²áid
-	·¢ËÍ£¬½ÓÊÕ
-	¸üÐÂall user ×´Ì¬
+client driver åŠŸèƒ½ï¼š
+	è¿žæŽ¥æœåŠ¡å™¨åˆ—è¡¨
+	è´Ÿè½½å‡è¡¡ç­–ç•¥ï¼šå‘é€è½®è¯¢ä¸€ä¸ªæœåŠ¡å™¨ä½¿ç”¨
+	æ–­çº¿é‡è¿žå®šæ—¶å™¨
+	æ³¨å†Œid
+	å‘é€ï¼ŒæŽ¥æ”¶
+	æ›´æ–°all user çŠ¶æ€
 	

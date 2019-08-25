@@ -25,6 +25,7 @@ bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 	L_COND_F(0 != user_id, "empty user_id");
 
 	//add user and group 
+	User *user=nullptr;
 	{
 		auto r = m_id_2_user.insert(make_pair(user_id, User(user_id, con.GetId(), req.group_id)));
 		if (!r.second)
@@ -33,6 +34,8 @@ bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 			return false;
 		}
 		con.SetUserId(user_id);
+		user = &(r.first->second);
+	 L_COND_F(user);
 	}
 
 	if (0 != req.group_id)
@@ -43,13 +46,13 @@ bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 		L_COND_F(r);
 	}
 	MsgNone send;
-	L_COND_F(Send(CMD_RSP_REG, send));
+	L_COND_F(user->Send(CMD_RSP_REG, send));
 
 	L_DEBUG("reg svr id=%d, group_id=%d", user_id, req.group_id);
 	return true;
 }
 
-//ClientConnect Îö¹¹Ê±µ÷ÓÃ£¬²»ÒªÔÙµ÷ÓÃMfSvrCon µÄº¯ÊıÁË¡£
+//ClientConnect ææ„æ—¶è°ƒç”¨ï¼Œä¸è¦å†è°ƒç”¨MfSvrCon çš„å‡½æ•°äº†ã€‚
 bool UserMgr::UnregUser(uint32 user_id)
 {
 	L_COND_F(user_id);

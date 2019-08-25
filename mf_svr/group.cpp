@@ -25,7 +25,7 @@ Group * GroupMgr::GetGroup(uint32 grp_id)
 		return nullptr;
 	}
 
-	Group &g = m_id_2_group[grp_id];//没有直接创建新的
+	Group &g = m_id_2_group[grp_id];//娌℃湁鐩存帴鍒涘缓鏂扮殑
 	return &g;
 }
 

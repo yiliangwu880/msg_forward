@@ -33,7 +33,7 @@ void OnExitProccess()
 namespace {
 	bool Init()
 	{
-		{//Çý¶¯su::timer
+		{//é©±åŠ¨su::timer
 			static lc::Timer loop_tm;
 			auto fun = std::bind(&SuMgr::OnTimer, &SuMgr::Obj());
 			L_COND_F(loop_tm.StartTimer(30, fun, true));

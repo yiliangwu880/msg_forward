@@ -5,9 +5,10 @@
 #include "svr_util/include/su_mgr.h"
 #include "../mf_proto/include/proto.h"
 #include "libevent_cpp/include/connector.h"
+#include "log_def.h"
 
 class MfSvrCon;
-//¾¡Á¿²»Òª¹¹Ôì£¬Îö¹¹º¯ÊıĞ´Âß¼­¡£ÒòÎª·ÅMAPÀïÃæµÄ£¬»á¾­³£¶à´Î¹¹Ôì£¬Îö¹¹¡£
+//å°½é‡ä¸è¦æ„é€ ï¼Œææ„å‡½æ•°å†™é€»è¾‘ã€‚å› ä¸ºæ”¾MAPé‡Œé¢çš„ï¼Œä¼šç»å¸¸å¤šæ¬¡æ„é€ ï¼Œææ„ã€‚
 class User
 {
 public:
@@ -46,7 +47,7 @@ template<class CtrlMsg>
 bool User::Send(mf::Cmd cmd, const CtrlMsg &send)
 {
 	std::string tcp_pack;
-	mf::CtrlMsgProto::Serialize(cmd, send, nullptr, 0, tcp_pack);
+	mf::MsgData::Serialize(cmd, send, nullptr, 0, tcp_pack);
 	lc::MsgPack msg_pack;
 	COND_F(msg_pack.Serialize(tcp_pack));
 	return SendLcMsg(msg_pack);
