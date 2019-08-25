@@ -10,7 +10,7 @@
 
 	git submodule init      --更新子模块
 	git submodule update			
-	git checkout -b	master		--强制删掉本地分支， track远程master分支
+	git checkout -f	master		--强制删掉本地分支， track远程master分支
 	主目录执行：sh clearBuild.sh 完成编译
 
 vs浏览代码：
