@@ -56,7 +56,6 @@ Project "mf_driver"
 Project "test"
 	includedirs { 
 		"../include/",
-		"base/",
 	}
 
 	SrcPath { 

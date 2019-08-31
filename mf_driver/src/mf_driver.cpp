@@ -185,6 +185,18 @@ bool mf::MfClientMgr::SendGroup(uint32 group_id, const char *pack, uint16 pack_l
 	return client->SendData(msg_pack);
 }
 
+
+void mf::MfClientMgr::ConUser(uint32 dst_id)
+{
+	UserClient* client = BlSelectSvr();
+	L_COND_F(client);
+
+	MsgReqCon send;
+	send.dst_id = dst_id;
+
+	client->SendCtrlMsg(CMD_REQ_CON, send);
+}
+
 void mf::MfClientMgr::TryReconMf()
 {
 	for(UserClient * p : m_vec_con)

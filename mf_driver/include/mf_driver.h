@@ -65,7 +65,7 @@ namespace mf {
 		MfClientMgr &m_mgr;
 	};
 
-	class MfClientMgr
+	class MfClientMgr 
 	{
 		friend class UserClient;
 	public:
@@ -110,7 +110,8 @@ namespace mf {
 		virtual void OnDiscon() = 0;
 
 		virtual void OnUserCon(uint32 dst_id) = 0;
-		virtual void OnUserDiscon(uint32 dst_id) = 0;//链接对方失败，或者对方主动断线，都会调用。
+		//链接对方失败，或者对方主动断线，都会调用。
+		virtual void OnUserDiscon(uint32 dst_id) = 0;
 		//@para src_id 发送方服务器id
 		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)=0;
 
