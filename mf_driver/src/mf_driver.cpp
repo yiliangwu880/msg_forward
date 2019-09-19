@@ -189,7 +189,7 @@ bool mf::MfClientMgr::SendGroup(uint32 group_id, const char *pack, uint16 pack_l
 void mf::MfClientMgr::ConUser(uint32 dst_id)
 {
 	UserClient* client = BlSelectSvr();
-	L_COND_F(client);
+	L_COND(client);
 
 	MsgReqCon send;
 	send.dst_id = dst_id;
