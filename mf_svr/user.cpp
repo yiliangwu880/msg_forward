@@ -16,7 +16,11 @@ using std::placeholders::_3;
 
 bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 {
-	L_COND_F(msg.ctrl_cmd == CMD_REQ_REG);
+	if (msg.ctrl_cmd != CMD_REQ_REG)
+	{
+		L_DEBUG("RegUser cmd must be CMD_REQ_REG. cur cmd=%d", msg.ctrl_cmd);
+		return false;
+	}
 	MsgReqReg req;
 	{
 		bool r = CtrlMsgProto::Parse(msg, req);

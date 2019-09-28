@@ -87,8 +87,12 @@ namespace
 		user.Send(CMD_RSP_CON, send);
 	}
 
-	void EachConSend(SvrCon &con, const lc::MsgPack *pMsgPack)
+	void EachConSend(SvrCon &con, const lc::MsgPack *pMsgPack, uint64 src_id)
 	{
+		if (con.GetId() == src_id)
+		{
+			return;
+		}
 		L_COND(pMsgPack);
 		con.SendData(*pMsgPack);//原样转发
 	}
@@ -100,7 +104,7 @@ namespace
 		const lc::MsgPack *pMsgPack = con.GetCurMsgPack();
 		L_COND(pMsgPack);
 		BaseConMgr &con_mgr = Server::Obj().GetBaseConMgr();
-		auto f = std::bind(EachConSend, _1, pMsgPack);
+		auto f = std::bind(EachConSend, _1, pMsgPack, con.GetId());
 		con_mgr.Foreach(f);
 	}
 
@@ -125,6 +129,10 @@ namespace
 		const set<uint32> &set_id = group->GetAllUser();
 		for(const auto v : set_id)
 		{
+			if (user.GetId() == v)
+			{
+				continue;
+			}
 			User *pUser = UserMgr::Obj().GetUser(v);
 			L_COND(pUser);
 			MfSvrCon *pCon = pUser->GetConnect();

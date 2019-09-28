@@ -97,8 +97,8 @@ void mf::UserClient::OnConnected()
 	MsgReqReg send;
 	send.svr_id = m_mgr.GetSvrId();
 	send.group_id = m_mgr.GetGrpId();
-
-	L_COND(SendCtrlMsg(CMD_REQ_CON, send));
+	L_DEBUG("OnConnected, req reg");
+	L_COND(SendCtrlMsg(CMD_REQ_REG, send));
 }
 
 void mf::UserClient::OnDisconnected()
@@ -133,6 +133,7 @@ bool mf::MfClientMgr::Init(const vector<MfAddr> &vec_mf_addr, uint32 svr_id, uin
 	{
 		UserClient *p = new UserClient(*this);
 		L_COND_F(p);
+		L_DEBUG("connect to %s %d", addr.ip.c_str(), addr.port);
 		ret = p->ConnectInit(addr.ip.c_str(), addr.port);
 		if (!ret)
 		{

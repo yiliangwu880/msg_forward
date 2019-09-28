@@ -1,8 +1,8 @@
 # CMake 最低版本号要求
 cmake_minimum_required (VERSION 2.8)
-
+set(project_name "test")
 # 项目信息
-project (mf_svr CXX)
+project (${project_name} CXX)
 
 
 # include directories
@@ -16,11 +16,8 @@ file(GLOB_RECURSE SRCS  ${PROJECT_SOURCE_DIR} "*.cc")
 file(GLOB_RECURSE SRCS2  ${PROJECT_SOURCE_DIR} "*.cpp")
 
 # 指定生成目标
-ADD_EXECUTABLE(mf_svr ${SRCS} ${SRCS2})
-
-#设置依赖
-#ADD_DEPENDENCIES(mf_svr svr_util libevent_cpp)
+ADD_EXECUTABLE(${project_name} ${SRCS} ${SRCS2})
 
 # 设置链接库
-target_link_libraries(mf_svr svr_util libevent_cpp mf_proto libevent.a)
+target_link_libraries(${project_name} mf_driver svr_util libevent_cpp mf_proto libevent.a)
 

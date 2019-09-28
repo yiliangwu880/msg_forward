@@ -28,7 +28,7 @@ main()
 
 namespace mf {
 	class MfClientMgr;
-	struct MfAddr 
+	struct MfAddr
 	{
 		std::string ip;
 		uint16 port;
@@ -38,9 +38,9 @@ namespace mf {
 	{
 	public:
 		UserClient(MfClientMgr &mgr)
-		:m_mgr(mgr)
-{
-}
+			:m_mgr(mgr)
+		{
+		}
 		virtual void OnRecv(const lc::MsgPack &msg) override;
 		virtual void OnConnected() override;
 		virtual void OnDisconnected() override;
@@ -65,11 +65,11 @@ namespace mf {
 		MfClientMgr &m_mgr;
 	};
 
-	class MfClientMgr 
+	class MfClientMgr
 	{
 		friend class UserClient;
 	public:
-		MfClientMgr() 
+		MfClientMgr()
 			:m_lb_idx(0)
 			, m_svr_id(0)
 			, m_grp_id(0)
@@ -90,7 +90,7 @@ namespace mf {
 		bool SendGroup(uint32 group_id, const char *custom_pack, uint16 custom_pack_len);
 
 		//连接目标user. 通过 MfClientMgr::OnUserCon 和 MfClientMgr::OnUserDiscon 反馈连接情况
-		void ConUser(uint32 dst_id); 
+		void ConUser(uint32 dst_id);
 
 		//一般定时调用，尝试连接断开的mf svr.
 		//建议5秒以上调用一次。
@@ -108,12 +108,12 @@ namespace mf {
 		virtual void OnCon() = 0;
 		//全部连接都失败就反馈。
 		virtual void OnDiscon() = 0;
-
+		//请求 ConUser 目标后，成功回调
 		virtual void OnUserCon(uint32 dst_id) = 0;
 		//链接对方失败，或者对方主动断线，都会调用。
 		virtual void OnUserDiscon(uint32 dst_id) = 0;
 		//@para src_id 发送方服务器id
-		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)=0;
+		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len) = 0;
 
 	private:
 		//ClientCon list
