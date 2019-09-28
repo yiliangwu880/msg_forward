@@ -53,15 +53,6 @@ Project "mf_driver"
 	"../mf_driver/*.txt",
 	}
 	
-Project "combine_client"
-	includedirs { 
-		"../include/",
-	}
-
-	SrcPath { 
-		"../test/combine_client/**",  
-	}
-	
 Project "samples"
 	includedirs { 
 		"../include/",
@@ -72,7 +63,25 @@ Project "samples"
 		"../samples/**",  
 	}
 	
+Project "test_combine"
+	includedirs { 
+		"../include/",
+	}
 
+	SrcPath { 
+		"../test/test_combine/**",  
+	}
+	
+
+Project "test_recon"
+	includedirs { 
+		"../include/",
+	}
+
+	SrcPath { 
+		"../test/test_recon/**",  
+	}
+	
 
 
     

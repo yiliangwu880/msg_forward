@@ -1,0 +1,3 @@
+
+ADD_SUBDIRECTORY(test_combine)
+ADD_SUBDIRECTORY(test_recon)
