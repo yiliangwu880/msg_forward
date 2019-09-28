@@ -53,13 +53,13 @@ Project "mf_driver"
 	"../mf_driver/*.txt",
 	}
 	
-Project "test"
+Project "combine_client"
 	includedirs { 
 		"../include/",
 	}
 
 	SrcPath { 
-		"../test/**",  
+		"../test/combine_client/**",  
 	}
 	
 Project "samples"

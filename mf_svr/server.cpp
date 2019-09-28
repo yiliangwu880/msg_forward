@@ -3,7 +3,6 @@
 
 bool Server::Init()
 {
-	L_COND_F(CfgMgr::Obj().Init());
 	bool r = m_listener.Init(CfgMgr::Obj().GetSvrPort());
 	L_COND_F(r);
 
@@ -19,6 +18,7 @@ lc::BaseConMgr & Server::GetBaseConMgr()
 
 CfgMgr::CfgMgr()
 	:m_port(0)
+	, is_daemon(false)
 {
 
 }
@@ -27,9 +27,12 @@ bool CfgMgr::Init()
 {
 	L_DEBUG("init cfg");
 	su::Config cfg;
-	L_COND_F(cfg.init("cfg/cfg.txt"));
+	L_COND_F(cfg.init("mf_svr_cfg.txt"));
 
 	m_port = (uint16)cfg.GetInt("port");
 	L_DEBUG("port=%d", m_port);
+	is_daemon = (bool)cfg.GetInt("is_daemon");
+	L_DEBUG("is_daemon=%d", is_daemon);
+
 	return true;
 }

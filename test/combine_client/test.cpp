@@ -21,7 +21,7 @@ namespace
 	void  MainMgr_ConUser();
 
 
-class CloseMgr : public MfClientMgr, public Singleton<CloseMgr>
+class MfClient : public MfClientMgr, public Singleton<MfClient>
 {
 public:
 	enum Status
@@ -32,7 +32,7 @@ public:
 	};
 	Status m_status;
 public:
-	CloseMgr()
+	MfClient()
 		:m_status(WAIT_CON)
 	{}
 
@@ -112,7 +112,7 @@ private:
 	{
 		UNIT_INFO("OnCon");
 		UNIT_ASSERT(WAIT_CON == m_status);
-		CloseMgr::Obj().Init(CfgMgr::Obj().GetVecAddr(), 2);
+		MfClient::Obj().Init(CfgMgr::Obj().GetVecAddr(), 2);
 		m_status = WAIT_OnUserCon;
 
 		UNIT_ASSERT(GetSvrId() == 1);
@@ -159,7 +159,7 @@ private:
 			string s(custom_pack, custom_pack_len);
 			UNIT_INFO("OnRecv broadcast [%s]", s.c_str());
 			m_status = WAIT_OnUserDiscon;
-			CloseMgr::Obj().Free();
+			MfClient::Obj().Free();
 		}
 		else
 		{

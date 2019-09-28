@@ -51,6 +51,15 @@ namespace {
 
 int main(int argc, char* argv[])
 {
+	L_COND_F(CfgMgr::Obj().Init());
+
+	if (CfgMgr::Obj().IsDaemon())
+	{
+		//当nochdir为0时，daemon将更改进城的根目录为root(“ / ”)。
+		//当noclose为0是，daemon将进城的STDIN, STDOUT, STDERR都重定向到 / dev / null。
+		L_COND_F(0==daemon(1, 0));
+	}
+
 	SuMgr::Obj().Init();
 
 	//start or stop proccess

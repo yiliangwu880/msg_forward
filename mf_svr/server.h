@@ -25,8 +25,9 @@ public:
 
 	unsigned short GetSvrPort() const { return m_port; }
 	const char *GetSvrIp() const { return m_ip.c_str(); }
-
+	bool IsDaemon()const { return is_daemon; }
 private:
 	unsigned short m_port;
 	std::string m_ip;
+	bool is_daemon;
 };

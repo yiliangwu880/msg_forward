@@ -15,6 +15,7 @@ INCLUDE(cotire)
 INCLUDE_DIRECTORIES(system ./include/)
 INCLUDE_DIRECTORIES(system ./External/libevent_cpp/External/libevent-2.1.8-stable/out/include)
 INCLUDE_DIRECTORIES(after  ${PROJECT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(after  ./External)
 
 #运行cmake输出终端消息，调试可以用
 message(PROJECT_SOURCE_DIR_is: ${PROJECT_SOURCE_DIR})
@@ -51,14 +52,14 @@ endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 #set(CMAKE_CXX_COMPILER /usr/bin/g++)
 #SET(CMAKE_CPP_FLAGS_DEBUG "-g -Wall -std=c++11 -Wno-format") 
 
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 #SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
 ADD_SUBDIRECTORY(mf_proto)
 ADD_SUBDIRECTORY(mf_svr)
 ADD_SUBDIRECTORY(mf_driver)
 ADD_SUBDIRECTORY(test)
-#ADD_SUBDIRECTORY(samples)
+ADD_SUBDIRECTORY(samples)
 
 #自定义命令
 ##################################
