@@ -203,10 +203,11 @@ void mf::MfClientMgr::TryReconMf()
 	for(UserClient * p : m_vec_con)
 	{
 		L_COND(p);
-		if (p->IsConnect())
+		if (!p->IsWaitConnectReq())
 		{
 			continue;
 		}
+		L_TRACE("TryReconnect");
 		p->TryReconnect();
 	}
 }

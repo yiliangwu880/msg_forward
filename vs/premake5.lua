@@ -70,6 +70,7 @@ Project "test_combine"
 
 	SrcPath { 
 		"../test/test_combine/**",  
+		"../test/com/**",  
 	}
 	
 
@@ -80,6 +81,7 @@ Project "test_recon"
 
 	SrcPath { 
 		"../test/test_recon/**",  
+		"../test/com/**",  
 	}
 	
 

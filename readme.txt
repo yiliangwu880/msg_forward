@@ -23,6 +23,7 @@ vs浏览代码：
 	mf_svr      ==msg forward server
 	mf_driver   ==msg forward client driever。 客户端驱动库
 	mf_proto	==msg forward 协议库
+	bin			==执行文件
 
 
 

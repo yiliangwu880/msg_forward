@@ -6,6 +6,7 @@
 #include "svr_util/include/single_progress.h"
 #include "user.h"
 #include "MsgDispatch.h"
+#include <signal.h>
 
 using namespace su;
 using namespace std;
@@ -47,6 +48,15 @@ namespace {
 		}
 		return true;
 	}
+
+	void SignalCB(int sig_type)
+	{
+		if (SIGUSR1 == sig_type)
+		{
+			L_INFO("rev SIGUSR1");
+			lc::EventMgr::Obj().StopDispatch();
+		}
+	}
 }
 
 int main(int argc, char* argv[])
@@ -66,6 +76,7 @@ int main(int argc, char* argv[])
 	SPMgr::Obj().Check(argc, argv, "mf_svr", OnExitProccess);
 
 	lc::EventMgr::Obj().Init(&MyLog::Obj());
+	lc::EventMgr::Obj().RegSignal(SIGUSR1, SignalCB);
 
 	if (!Init())
 	{

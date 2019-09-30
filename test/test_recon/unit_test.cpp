@@ -86,7 +86,6 @@ void UnitTestMgr::Printf(bool is_error, const char * file, int line, const char 
 	vsnprintf(out_str, sizeof(out_str) - 1, s.c_str(), vp);
 
 	::printf(out_str);
-
 	va_end(vp);
 }
 

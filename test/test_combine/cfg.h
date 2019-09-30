@@ -7,7 +7,7 @@
 #include "unit_test.h"
 #include "../mf_driver/include/mf_driver.h"
 
-using namespace su;//h文件声明，风格不好，别学。
+using namespace su;
 using namespace mf;
 using namespace lc;
 
@@ -20,7 +20,7 @@ public:
 	{
 		UNIT_INFO("init cfg");
 		su::Config cfg;
-		UNIT_ASSERT(cfg.init("combine_svr/mf_svr_cfg.txt"));
+		UNIT_ASSERT(cfg.init("../combine_svr/mf_svr_cfg.txt"));
 
 		uint16 port = (uint16)cfg.GetInt("port");
 		UNIT_INFO("port=%d", port);

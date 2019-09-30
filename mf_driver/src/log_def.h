@@ -11,6 +11,7 @@
 #define L_WARN(x, ...)   su::LogMgr::Obj().Printf(su::LL_WARN, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);
 #define L_INFO(x, ...)   su::LogMgr::Obj().Printf(su::LL_INFO, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);
 #define L_DEBUG(x, ...)  su::LogMgr::Obj().Printf(su::LL_DEBUG, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);
+#define L_TRACE(x, ...)  su::LogMgr::Obj().Printf(su::LL_TRACE, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);
 
 //简化if语句写法
 
