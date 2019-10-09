@@ -85,6 +85,16 @@ Project "test_recon"
 	}
 	
 
+Project "test_more_svr"
+	includedirs { 
+		"../include/",
+	}
+
+	SrcPath { 
+		"../test/test_more_svr/**",  
+		"../test/com/**",  
+	}
+	
 
     
     

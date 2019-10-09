@@ -10,6 +10,13 @@ function KillProcess(){
 	
 }
 
+#关闭一个进程
+#$1 进程关键字，会用来grep
+function KillOneProcess(){
+    echo "KillProcess $1"
+	ps -ef|grep $user_name|grep -v "grep"|grep -v $0|grep $1|awk '{print $2}' | head -n 1|xargs kill -10 &>/dev/null
+	
+}
 
 
 #$1 start cmd
@@ -34,9 +41,12 @@ function Init()
 	cp mf_svr ./svr1 -rf
 	cp mf_svr ./svr2 -rf
 	cp mf_svr ./svr3 -rf
+	cp mf_svr ./ReconSvr -rf
 	cp mf_svr ./combine_svr -rf
 	mkdir f_test_combine
 	cp test_combine ./f_test_combine -rf
+	mkdir FTestMoreSvr
+	cp test_more_svr ./FTestMoreSvr -rf
 	
 	rm error.txt
 	rm log.txt
@@ -45,6 +55,8 @@ function Init()
 	rm ./svr3/log.txt
 	rm ./combine_svr/log.txt
 	rm ./f_test_combine/log.txt
+	rm ./FTestMoreSvr/log.txt
+	rm ./FTestMoreSvr/lc_log.txt
 }
 
 function TestCombine()
@@ -68,7 +80,7 @@ function TestCombine()
 function TestRecon()
 {
 	echo restart1
-	cd svr1
+	cd ReconSvr
 	StartDaemon ./mf_svr 
 	cd -
 	
@@ -77,8 +89,8 @@ function TestRecon()
 	sleep 2
 	
 	#reconnect 1
-	echo cd svr1
-	cd svr1
+	echo cd ReconSvr
+	cd ReconSvr
 	echo restart2
 	KillProcess "./mf_svr"
 	sleep 1
@@ -101,11 +113,54 @@ function TestRecon()
 	grep "ERROR\|error" log.txt >>  error.txt 
 }
 
-
+function TestMoreMfSvr()
+{
+	 KillProcess "./mf_svr"
+	 cd FTestMoreSvr
+	 StartDaemon ./test_more_svr
+	 cd -
+	
+	sleep 2
+	cd svr1
+	StartDaemon ./mf_svr 
+	cd -
+	cd svr2
+	StartDaemon ./mf_svr 
+	cd -
+	cd svr3
+	StartDaemon ./mf_svr 
+	cd -
+	sleep 2
+	
+	#del two svr
+	KillOneProcess mf_svr
+	KillOneProcess mf_svr
+	sleep 4
+	#start two svr
+	cd svr1
+	StartDaemon ./mf_svr 
+	cd -
+	cd svr2
+	StartDaemon ./mf_svr 
+	cd -
+	sleep 2
+	
+	#del old svr
+	KillOneProcess mf_svr
+	sleep 4
+	KillProcess test_more_svr
+	KillProcess "./mf_svr"
+	echo end
+	
+	cd FTestMoreSvr
+	grep "ERROR\|error" log.txt >>  ../error.txt 
+	cd -
+}
 #main follow
 ########################################################################################################
 Init
-#TestCombine
+TestCombine
 TestRecon
+TestMoreMfSvr
 cat error.txt
 

@@ -1,4 +1,4 @@
-//测试重链
+//测试多个mf_svr的可用性
 
 #include <string>
 #include "libevent_cpp/include/include_all.h"
@@ -30,15 +30,17 @@ public:
 	enum Status
 	{
 		WAIT_CON,
-		WAIT_DISCON,
-
+		WAIT_ECHO_SVR_CON,
+		RUN_ECHO, //不停发收
 	};
-	Status m_status;
-	uint32 m_con_cnt;
+	Status m_status; 
+	lc::Timer m_tm;
+	lc::Timer m_send_tm;
+	uint32 m_repeated_user_con_cnt;
 public:
 	MfClient()
 		:m_status(WAIT_CON)
-		, m_con_cnt(0)
+		, m_repeated_user_con_cnt(0)
 	{}
 
 	bool Send(uint32 dst_id, const string &s)
@@ -50,43 +52,63 @@ private:
 	//反馈连接mf svr list 情况。能连接任意一台都算成功。
 	virtual void OnCon()
 	{
-		m_con_cnt++;
-		UNIT_INFO("OnCon %d", m_con_cnt);
-		if (3==m_con_cnt)//1次初始化，2次重连
+		UNIT_ASSERT(m_status == WAIT_CON);
+		m_status = WAIT_ECHO_SVR_CON;
+
+		auto f = []()
 		{
-			UNIT_INFO("send a1");
-			Send(ECHO_SVR_ID, "a1");
-		}
+			MfClient::Obj().ConUser(ECHO_SVR_ID);
+		};
+		m_tm.StartTimer(1000, f, true);
 	}
 
 	//全部连接都失败就反馈。
 	virtual void OnDiscon()
 	{
 		UNIT_INFO("---------OnDiscon-----------");
+		UNIT_ASSERT(m_status == WAIT_CON);
 	}
 
 	virtual void OnUserCon(uint32 dst_id)
 	{
 		UNIT_INFO("OnUserCon %d", dst_id);
+		m_repeated_user_con_cnt++;
+		UNIT_ASSERT(dst_id == ECHO_SVR_ID);
+		if (WAIT_ECHO_SVR_CON == m_status)
+		{
+			m_status = RUN_ECHO;
+			Send(ECHO_SVR_ID, "echo");
+			UNIT_INFO("start send echo");
+		}
+		else
+		{//重复连接
+			m_tm.StopTimer();
+			UNIT_ASSERT(m_repeated_user_con_cnt < 3); //重复连接次数太多，情况不明。
+		}
 	}
 
 	//链接对方失败，或者对方主动断线，都会调用。
 	virtual void OnUserDiscon(uint32 dst_id)
 	{
 		UNIT_INFO("OnUserDiscon %d", dst_id);
+		UNIT_ASSERT(false);
 	}
 
 	//@para src_id 发送方服务器id
 	virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
 	{
+		UNIT_ASSERT(RUN_ECHO == m_status);
 		UNIT_INFO("rev msg from echo");
 		UNIT_ASSERT(ECHO_SVR_ID == src_id);
 		string s(custom_pack, custom_pack_len);
-		UNIT_ASSERT(s == "a1");
-
+		UNIT_ASSERT(s == "echo");
 		g_is_done = true;
 
-		EventMgr::Obj().StopDispatch();
+		auto f = []()
+		{
+			MfClient::Obj().Send(ECHO_SVR_ID, "echo");
+		};
+		m_send_tm.StartTimer(1000, f);
 	}
 
 };

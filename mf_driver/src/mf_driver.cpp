@@ -27,7 +27,11 @@ void mf::UserClient::OnRecv(const lc::MsgPack &msg)
 	case CMD_RSP_REG:
 	{
 		//接收到就是成功
-		m_mgr.OnCon();
+		if (!m_mgr.m_is_con_svr)
+		{
+			m_mgr.OnCon();
+			m_mgr.m_is_con_svr = true;
+		}
 	}
 	break;
 	case CMD_RSP_CON:
@@ -97,7 +101,7 @@ void mf::UserClient::OnConnected()
 	MsgReqReg send;
 	send.svr_id = m_mgr.GetSvrId();
 	send.group_id = m_mgr.GetGrpId();
-	L_DEBUG("OnConnected, req reg");
+	L_TRACE("OnConnected, req reg");
 	L_COND(SendCtrlMsg(CMD_REQ_REG, send));
 }
 
@@ -225,6 +229,7 @@ void mf::MfClientMgr::OnOneMfDiscon()
 	}
 	//all mf disconnect
 	OnDiscon();
+	m_is_con_svr = false;
 }
 
 mf::UserClient* mf::MfClientMgr::BlSelectSvr()

@@ -73,6 +73,7 @@ namespace mf {
 			:m_lb_idx(0)
 			, m_svr_id(0)
 			, m_grp_id(0)
+			, m_is_con_svr(false)
 		{
 		}
 		~MfClientMgr();
@@ -104,7 +105,8 @@ namespace mf {
 		UserClient* BlSelectSvr(); //负载均衡一台mf svr
 
 	private:
-		//反馈连接mf svr list 情况。能连接任意一台都算成功。
+		//反馈连接mf svr list 情况。连接任意第一台都算成功。
+		//连接已成功的情况，再连接第N台，不会回调。
 		virtual void OnCon() = 0;
 		//全部连接都失败就反馈。
 		virtual void OnDiscon() = 0;
@@ -121,6 +123,7 @@ namespace mf {
 		uint32 m_lb_idx; //load blance轮询数
 		uint32 m_svr_id; //我的服务器id
 		uint32 m_grp_id;
+		bool m_is_con_svr; //true表示已连接任意一台mf svr
 	};
 
 }

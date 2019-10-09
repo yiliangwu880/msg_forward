@@ -17,7 +17,7 @@ using namespace lc;
 
 namespace
 {
-	static bool g_is_end = false;
+	static bool g_is_done = false;
 	void  MainMgr_ConUser();
 
 
@@ -141,7 +141,7 @@ private:
 		UNIT_ASSERT(2 == dst_id);
 		m_status = WAIT_END;
 		MainMgr::Obj().Free();
-		g_is_end = true;
+		g_is_done = true;
 	} 
 
 	//@para src_id 发送方服务器id
@@ -189,12 +189,12 @@ UNITTEST(cd)
 
 
 	EventMgr::Obj().Dispatch();
-	if (!g_is_end)
+	if (!g_is_done)
 	{
 		if (MainMgr::Obj().m_status == MainMgr::WAIT_CON)
 		{
 			UNIT_ERROR("connect mf_svr fail, mabe your haven't start  mf_svr");
 		}
 	}
-	UNIT_ASSERT(g_is_end);
+	UNIT_ASSERT(g_is_done);
 }
