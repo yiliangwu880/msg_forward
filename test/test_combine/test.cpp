@@ -112,7 +112,7 @@ private:
 	{
 		UNIT_INFO("OnCon");
 		UNIT_ASSERT(WAIT_CON == m_status);
-		MfClient::Obj().Init(CfgMgr::Obj().GetVecAddr(), 2);
+		UNIT_ASSERT(MfClient::Obj().Init(CfgMgr::Obj().GetVecAddr(), 2));
 		m_status = WAIT_OnUserCon;
 
 		UNIT_ASSERT(GetSvrId() == 1);
@@ -168,9 +168,53 @@ private:
 		}
 
 	}
+
 };
 
 
+class RegFailMgr : public MfClientMgr, public Singleton< RegFailMgr>
+{
+public:
+	bool is_ok;
+
+public:
+	RegFailMgr()
+	{
+		is_ok = false;
+	}
+
+	bool Send(uint32 dst_id, const string &s)
+	{
+		return MfClientMgr::Send(dst_id, s.c_str(), s.length());
+	}
+private:
+	//反馈连接mf svr list 情况。能连接任意一台都算成功。
+	virtual void OnCon()
+	{
+	}
+
+	//全部连接都失败就反馈。
+	virtual void OnDiscon()
+	{
+		UNIT_INFO("OnRegFail %d", GetSvrId());
+		is_ok = true;
+	}
+
+	virtual void OnUserCon(uint32 dst_id)
+	{
+	}
+
+	//链接对方失败，或者对方主动断线，都会调用。
+	virtual void OnUserDiscon(uint32 dst_id)
+	{
+	}
+
+	//@para src_id 发送方服务器id
+	virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
+	{
+	}
+
+};
 
 void MainMgr_ConUser()
 {
@@ -186,7 +230,10 @@ UNITTEST(cd)
 	EventMgr::Obj().Init();
 
 	MainMgr::Obj().Init(CfgMgr::Obj().GetVecAddr(), 1);
-
+	UNIT_INFO("--------next line error is right---------");
+	UNIT_ASSERT(!MainMgr::Obj().Init(CfgMgr::Obj().GetVecAddr(), 1));
+	UNIT_INFO("start repeated reg");
+	RegFailMgr::Obj().Init(CfgMgr::Obj().GetVecAddr(), 1);
 
 	EventMgr::Obj().Dispatch();
 	if (!g_is_done)
@@ -196,5 +243,6 @@ UNITTEST(cd)
 			UNIT_ERROR("connect mf_svr fail, mabe your haven't start  mf_svr");
 		}
 	}
+	UNIT_ASSERT(RegFailMgr::Obj().is_ok);
 	UNIT_ASSERT(g_is_done);
 }

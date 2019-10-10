@@ -92,8 +92,8 @@ namespace mf {
 		CMD_NONE = 0,
 		CMD_NTF_COM,               //通用响应消息， MsgNtfCom
 
-		CMD_REQ_REG,		       //请求注册 	MsgReqReg, mf注册失败，会断开客户端链接
-		CMD_RSP_REG,				//MsgNone
+		CMD_REQ_REG,		       //请求注册 	MsgReqReg, mf注册失败，会响应失败响应，然后断开客户端链接
+		CMD_RSP_REG,				//MsgRspReg
 
 		CMD_REQ_CON,			   //请求连接User MsgReqCon,
 		CMD_RSP_CON,			   //MsgRspCon
@@ -109,7 +109,7 @@ namespace mf {
 	{
 		MsgNtfCom()
 			:req_cmd(CMD_NONE)
-			,tips_len(0)
+			, tips_len(0)
 		{}
 		void Init(Cmd cmd, const char *t);
 		Cmd req_cmd; //被反馈的请求消息号
@@ -196,7 +196,7 @@ namespace mf {
 			return msg.Parse(data, len);
 		}
 		template<>
-	  inline	void Serialize(const MsgNtfCom &msg, std::string &out)
+		inline	void Serialize(const MsgNtfCom &msg, std::string &out)
 		{
 			msg.Serialize(out);
 		}

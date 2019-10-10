@@ -61,14 +61,16 @@ function Init()
 
 function TestCombine()
 {
+	KillProcess "./mf_svr"
 	cd combine_svr
 	./mf_svr 
 	cd -
 	
-	sleep 3
+	sleep 1
 	cd f_test_combine
 	./test_combine > OutLog.txt
 	cd -
+	sleep 1
 	
 	KillProcess "./mf_svr"
 	echo CombineTest end
@@ -160,7 +162,7 @@ function TestMoreMfSvr()
 ########################################################################################################
 Init
 TestCombine
-TestRecon
-TestMoreMfSvr
+#TestRecon
+#TestMoreMfSvr
 cat error.txt
 

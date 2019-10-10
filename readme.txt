@@ -1,8 +1,9 @@
 介绍：
 	服务器间通讯用。消息转发。
-	msg_forward的客户端，通常做为其他服务的服务器。
+	msg_forward的客户端，其实也是服务器，作为其他服务。
 	特点：
-		多个客户端，定义唯一id,到msg_forward注册后，就可以互相之间通讯了。
+		多个客户端之间通讯。
+		客户端之间定义唯一id,到msg_forward注册后就可以互相通讯了。
 		客户端 之间通讯，不需要配置彼此之间的地址,只需要配置msg_forward的地址就能实现通讯。
 	
 编译方法：
@@ -24,7 +25,7 @@ vs浏览代码：
 	mf_driver   ==msg forward client driever。 客户端驱动库
 	mf_proto	==msg forward 协议库
 	bin			==执行文件
-
+	test 		==测试
 
 
 

@@ -26,11 +26,11 @@ void mf::UserClient::OnRecv(const lc::MsgPack &msg)
 	break;
 	case CMD_RSP_REG:
 	{
-		//Êé•Êî∂Âà∞Â∞±ÊòØÊàêÂäü
-		if (!m_mgr.m_is_con_svr)
+		//Ω” ’µΩæÕ «≥…π¶
+		if (!m_mgr.m_is_coning)
 		{
 			m_mgr.OnCon();
-			m_mgr.m_is_con_svr = true;
+			m_mgr.m_is_coning = true;
 		}
 	}
 	break;
@@ -127,6 +127,11 @@ bool mf::MfClientMgr::Init(const vector<MfAddr> &vec_mf_addr, uint32 svr_id, uin
 	if (nullptr == eb)
 	{
 		L_ERROR("you should call EventMgr::Obj().Init() before call BaseClientMgr::Init");
+		return false;
+	}
+	if (0 != m_svr_id)
+	{
+		L_ERROR("repeated init");
 		return false;
 	}
 
@@ -229,7 +234,7 @@ void mf::MfClientMgr::OnOneMfDiscon()
 	}
 	//all mf disconnect
 	OnDiscon();
-	m_is_con_svr = false;
+	m_is_coning = false;
 }
 
 mf::UserClient* mf::MfClientMgr::BlSelectSvr()
