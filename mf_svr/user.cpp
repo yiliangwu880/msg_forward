@@ -79,6 +79,10 @@ bool UserMgr::UnregUser(uint32 user_id)
 	for( auto &v : m_id_2_user)
 	{
 		User &user = v.second;
+		if (!user.IsConnect())
+		{//有些user已经断开连接，还没处理删除操作。
+			continue;
+		}
 		user.Send(CMD_NTF_DISCON, send);
 	}
 	return true;
@@ -124,6 +128,13 @@ bool User::SendLcMsg(const lc::MsgPack &msg_pack)
 		L_WARN("send msg fail");
 	}
 	return ret;
+}
+
+bool User::IsConnect()
+{
+	BaseConMgr &con_mgr = Server::Obj().GetBaseConMgr();
+	SvrCon *pCon = con_mgr.FindConn(m_con_id);
+	return pCon != nullptr;
 }
 
 

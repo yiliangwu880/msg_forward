@@ -8,7 +8,7 @@
 #include "log_def.h"
 
 class MfSvrCon;
-//尽量不要构造，析构函数写逻辑。因为放MAP里面的，会经常多次构造，析构。
+//尽量不要构造，析构函数写逻辑。因为User放MAP里面的，会经常多次构造，析构。
 class User
 {
 public:
@@ -23,6 +23,8 @@ public:
 
 	uint32 GetGroupId() const { return m_group_id; }
 	uint32 GetId() const { return m_id; }
+	//return false 表示连接已经断开，等删除对象。
+	bool IsConnect(); 
 private:
 	uint32 m_id;
 	uint64 m_con_id; //ConnectClient id
