@@ -53,8 +53,10 @@ function Init()
 	rm ./svr1/log.txt
 	rm ./svr2/log.txt
 	rm ./svr3/log.txt
-	rm ./combine_svr/log.txt
+	rm ./combine_svr/svr_util_log.txt
 	rm ./f_test_combine/log.txt
+	rm ./f_test_combine/svr_util_log.txt
+	rm ./f_test_combine/mylog.txt
 	rm ./FTestMoreSvr/log.txt
 	rm ./FTestMoreSvr/lc_log.txt
 }
@@ -76,7 +78,7 @@ function TestCombine()
 	echo CombineTest end
 	
 	grep "ERROR\|error" ./f_test_combine/OutLog.txt >>  error.txt  #追加
-	grep "ERROR\|error" ./combine_svr/log.txt >>  error.txt 
+	grep "ERROR\|error" ./combine_svr/svr_util_log.txt >>  error.txt 
 }
 
 function TestRecon()

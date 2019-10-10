@@ -39,7 +39,7 @@ bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 		}
 		con.SetUserId(user_id);
 		user = &(r.first->second);
-	 L_COND_F(user);
+		L_COND_F(user);
 	}
 
 	if (0 != req.group_id)

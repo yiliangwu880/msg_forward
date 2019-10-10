@@ -96,6 +96,16 @@ Project "test_more_svr"
 	}
 	
 
+Project "test_group"
+	includedirs { 
+		"../include/",
+	}
+
+	SrcPath { 
+		"../test/test_group/**",  
+		"../test/com/**",  
+	}
+	
     
     
     
