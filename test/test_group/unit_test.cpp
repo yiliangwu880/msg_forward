@@ -12,13 +12,13 @@ IUnitTest::IUnitTest(const char *unit_name)
 	UnitTestMgr::Obj().Reg(this);
 }
 
-void UnitTestMgr::Start(UnitTestPrintf *printf)
+void UnitTestMgr::Start(UnitTestPrintf printf)
 {
 	m_print = printf;
-	for (auto &var : m_vecUnit)
+	for (auto &var : m_name2unit)
 	{
-		UNIT_INFO("=========[%s]========", var->m_unit_name);
-		var->Run();
+		UNIT_INFO("=========[%s]========", var.second->m_unit_name);
+		var.second->Run();
 	}
 }
 
@@ -28,7 +28,13 @@ void UnitTestMgr::Reg(IUnitTest *p)
 	{
 		return;
 	}
-	m_vecUnit.push_back(p);
+	auto it = m_name2unit.find(p->m_unit_name);
+	if (it != m_name2unit.end())
+	{
+		UNIT_ERROR("repeated reg test name=%S", p->m_unit_name);
+		return;
+	}
+	m_name2unit[p->m_unit_name]=p;
 }
 
 void UnitTestMgr::Printf(bool is_error, const char * file, int line, const char *fun, const char * pattern, ...)
@@ -85,7 +91,7 @@ void UnitTestMgr::Printf(bool is_error, const char * file, int line, const char 
 	out_str[1000] = 0;
 	vsnprintf(out_str, sizeof(out_str) - 1, s.c_str(), vp);
 
-	::printf(out_str);
+	::puts(out_str);
 
 	va_end(vp);
 }

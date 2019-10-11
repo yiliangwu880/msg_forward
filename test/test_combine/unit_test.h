@@ -1,9 +1,12 @@
 /*
+version: 1.02
 简单的单元测试功能。
 	 语法简洁
 	 结果显示在标准输出，可以选择接入自己的日志实现。
 	 错误异常处理
+	 测试名唯一，排序
 
+使用方法：复制unit_test.h *.cpp文件到你的工程，编译使用。
 excamples:
 
 UNITTEST(t1)
@@ -24,6 +27,7 @@ UnitTestMgr::Obj().Start();
 
 #include <vector>
 #include <stdarg.h>
+#include <map>
 
 class IUnitTest
 {
@@ -35,7 +39,7 @@ public:
 };
 
 //@para va_list vp, vp不需要回调里面释放
-typedef void (UnitTestPrintf)(bool is_error, const char * file, int line, const char *fun, const char * pattern, va_list vp);
+using UnitTestPrintf = void (*)(bool is_error, const char * file, int line, const char *fun, const char * pattern, va_list vp);
 class UnitTestMgr
 {
 public:
@@ -44,7 +48,7 @@ public:
 		static UnitTestMgr d;
 		return d;
 	}
-	void Start(UnitTestPrintf *printf= nullptr);
+	void Start(UnitTestPrintf printf= nullptr);
 	void Reg(IUnitTest *p);
 	void Printf(bool is_error, const char * file, int line, const char *pFun, const char * pattern, ...);
 
@@ -54,8 +58,8 @@ private:
 	{}
 
 private:
-	std::vector<IUnitTest*> m_vecUnit;
-	UnitTestPrintf *m_print;
+	std::map < std::string, IUnitTest* > m_name2unit;
+	UnitTestPrintf m_print;
 };
 
 #define UNIT_ERROR(x, ...)  UnitTestMgr::Obj().Printf( true, __FILE__, __LINE__, __FUNCTION__, x, ##__VA_ARGS__);

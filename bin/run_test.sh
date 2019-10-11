@@ -186,8 +186,8 @@ function TestMoreMfSvr()
 #main follow
 ########################################################################################################
 Init
-#TestCombine
-TestGroup
+TestCombine
+#TestGroup
 #TestRecon
 #TestMoreMfSvr
 cat error.txt

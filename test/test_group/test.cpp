@@ -17,11 +17,13 @@ using namespace lc;
 
 namespace
 {
-	class GroupBase : public MfClientMgr
+	class Group1U3;
+	Group1U3 * g_pU3 = nullptr;
+	class UserBase : public MfClientMgr
 	{
 	public:
 	public:
-		GroupBase()
+		UserBase()
 		{}
 
 		bool Send(uint32 dst_id, const string &s)
@@ -62,12 +64,14 @@ namespace
 
 	};
 
-	class Group1U1 : public GroupBase, public Singleton<Group1U1>
+	class U1 : public UserBase, public Singleton<U1>
 	{
 	public:
-		bool m_rev_4;
-		Group1U1()
-			:m_rev_4(false)
+		bool m_is_ok;
+		uint32 rev_num;
+		U1()
+			:m_is_ok(false)
+			, rev_num(0)
 		{
 		}
 	private:
@@ -80,16 +84,22 @@ namespace
 			string s(custom_pack, custom_pack_len);
 			UNIT_ASSERT(s == "group");
 			UNIT_ASSERT(src_id == 4);
-			m_rev_4 = true;
+			rev_num++;
+			if (rev_num == 2)
+			{
+				m_is_ok = true;
+			}
 		}
 	};
 
-	class Group1U2 : public GroupBase, public Singleton<Group1U2>
+	class Group1U2 : public UserBase, public Singleton<Group1U2>
 	{
 	public:
 		bool m_rev_4;
+		uint32 rev_num;
 		Group1U2()
 			:m_rev_4(false)
+			, rev_num(0)
 		{
 		}
 	private:
@@ -100,10 +110,14 @@ namespace
 		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
 		{
 			UNIT_ASSERT(src_id == 4);
-			m_rev_4 = true;
+			rev_num++;
+			if (rev_num == 2)
+			{
+				m_rev_4 = true;
+			}
 		}
 	};
-	class Group1U3 : public GroupBase, public Singleton<Group1U3>
+	class Group1U3 : public UserBase
 	{
 	public:
 		bool m_rev_4;
@@ -111,19 +125,26 @@ namespace
 			:m_rev_4(false)
 		{
 		}
+		virtual ~Group1U3() {}
 	private:
-		virtual void OnCon()
+		virtual void OnCon() final
 		{
 
 		}
-		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
+		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len) final
 		{
 			UNIT_ASSERT(src_id == 4);
 			m_rev_4 = true;
+			Send(4, "del_U3");
 		}
+		virtual void OnDiscon()final {};
+		//请求 ConUser 目标后，成功回调
+		virtual void OnUserCon(uint32 dst_id)final {};
+		//链接对方失败，注册失败, 对方主动断线, 都会调用。
+		virtual void OnUserDiscon(uint32 dst_id)final {};
 	};
 
-	class Group0U4 : public GroupBase, public Singleton<Group0U4>
+	class Group0U4 : public UserBase, public Singleton<Group0U4>
 	{
 	public:
 		bool m_is_done;
@@ -164,13 +185,26 @@ namespace
 			{
 				UNIT_INFO("send msg to group 1");
 				SendGroup(1, "group");
-				m_is_done = true;
 			}
+		}
+
+		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
+		{
+			string s(custom_pack, custom_pack_len);
+			UNIT_ASSERT(s == "del_U3");
+			UNIT_ASSERT(src_id == 3);
+			UNIT_ASSERT(g_pU3->m_rev_4 == true);
+			delete g_pU3;
+			g_pU3 = nullptr;
+
+			UNIT_INFO("send msg to group 1");
+			SendGroup(1, "group");
+			m_is_done = true;
 		}
 
 	};
 
-	class Group0U5 : public GroupBase, public Singleton<Group0U5>
+	class Group0U5 : public UserBase, public Singleton<Group0U5>
 	{
 	public:
 		bool m_is_done;
@@ -204,10 +238,10 @@ UNITTEST(cd)
 {
 	UNIT_ASSERT(CfgMgr::Obj().Init());
 	EventMgr::Obj().Init();
-
-	Group1U1::Obj().Init(CfgMgr::Obj().GetVecAddr(), 1, 1);
+	g_pU3 = new Group1U3;
+	U1::Obj().Init(CfgMgr::Obj().GetVecAddr(), 1, 1);
 	Group1U2::Obj().Init(CfgMgr::Obj().GetVecAddr(), 2, 1);
-	Group1U3::Obj().Init(CfgMgr::Obj().GetVecAddr(), 3, 1);
+	g_pU3->Init(CfgMgr::Obj().GetVecAddr(), 3, 1);
 	Group0U4::Obj().Init(CfgMgr::Obj().GetVecAddr(), 4);
 	Group0U5::Obj().Init(CfgMgr::Obj().GetVecAddr(), 5);
 
@@ -218,9 +252,9 @@ UNITTEST(cd)
 	tt.StartTimer(2000, f);
 	EventMgr::Obj().Dispatch();
 
-	UNIT_ASSERT(Group1U1::Obj().m_rev_4 == true);
+	UNIT_ASSERT(U1::Obj().m_is_ok == true);
 	UNIT_ASSERT(Group1U2::Obj().m_rev_4 == true);
-	UNIT_ASSERT(Group1U3::Obj().m_rev_4 == true);
+
 	UNIT_ASSERT(Group0U4::Obj().m_is_done == true);
 	UNIT_ASSERT(Group0U5::Obj().m_is_done == true);
 	UNIT_INFO("-------end---------");

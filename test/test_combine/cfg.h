@@ -18,6 +18,7 @@ class CfgMgr : public Singleton<CfgMgr>
 public:
 	bool Init()
 	{
+		m_vec_addr.clear();
 		UNIT_INFO("init cfg");
 		su::Config cfg;
 		UNIT_ASSERT(cfg.init("../combine_svr/mf_svr_cfg.txt"));

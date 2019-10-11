@@ -92,7 +92,7 @@ namespace mf {
 		CMD_NONE = 0,
 		CMD_NTF_COM,               //通用响应消息， MsgNtfCom
 
-		CMD_REQ_REG,		       //请求注册 	MsgReqReg, mf注册失败，会响应失败响应，然后断开客户端链接
+		CMD_REQ_REG,		       //请求注册 	MsgReqReg, mf注册失败，不用反馈给客户端，mfsvr避免复杂度。 客户端自己定时检查注册失败
 		CMD_RSP_REG,				//MsgRspReg
 
 		CMD_REQ_CON,			   //请求连接User MsgReqCon,

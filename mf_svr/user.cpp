@@ -34,7 +34,7 @@ bool UserMgr::RegUser(MfSvrCon &con, const mf::MsgData &msg)
 		auto r = m_id_2_user.insert(make_pair(user_id, User(user_id, con.GetId(), req.group_id)));
 		if (!r.second)
 		{
-			L_DEBUG("repeated reg user_id=%d", user_id);
+			L_DEBUG("repeated reg user_id=%d", user_id);//不用反馈给客户端，避免复杂度。 客户端自己定时检查注册失败
 			return false;
 		}
 		con.SetUserId(user_id);
@@ -112,7 +112,11 @@ MfSvrCon * User::GetConnect()
 	L_COND_R(m_con_id, nullptr);
 	BaseConMgr &con_mgr = Server::Obj().GetBaseConMgr();
 	SvrCon *pCon = con_mgr.FindConn(m_con_id);
-	L_COND_R(pCon, nullptr);
+	if (pCon == nullptr)
+	{
+		L_ERROR("FindConn fail. m_con_id=%lld", m_con_id);
+		return nullptr;
+	}
 	MfSvrCon *pClient = dynamic_cast<MfSvrCon *>(pCon);
 	L_COND_R(pClient, nullptr);
 	return pClient;

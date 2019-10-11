@@ -36,7 +36,7 @@ namespace
 			return;
 		}
 		User *dst_user = UserMgr::Obj().GetUser(req.dst_id);
-		if (nullptr == dst_user)
+		if (nullptr == dst_user || !dst_user->IsConnect())
 		{
 			MsgNtfDiscon send;
 			send.svr_id = req.dst_id;
@@ -135,6 +135,10 @@ namespace
 			}
 			User *pUser = UserMgr::Obj().GetUser(v);
 			L_COND(pUser);
+			if (!pUser->IsConnect())//连接已经断开，还没删除对象
+			{
+				continue;
+			}
 			MfSvrCon *pCon = pUser->GetConnect();
 			L_COND(pCon);
 			pCon->SendData(*pMsgPack);

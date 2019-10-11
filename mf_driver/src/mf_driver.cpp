@@ -26,12 +26,15 @@ void mf::UserClient::OnRecv(const lc::MsgPack &msg)
 	break;
 	case CMD_RSP_REG:
 	{
+		m_is_reg = true;
 		//接收到就是成功
 		if (!m_mgr.m_is_coning)
 		{
 			m_mgr.OnCon();
 			m_mgr.m_is_coning = true;
+			m_mgr.m_reg_tm.StopTimer();
 		}
+		//L_TRACE("rev CMD_RSP_REG");
 	}
 	break;
 	case CMD_RSP_CON:
@@ -107,16 +110,27 @@ void mf::UserClient::OnConnected()
 
 void mf::UserClient::OnDisconnected()
 {
+	m_is_reg = false;
 	m_mgr.OnOneMfDiscon();
 }
 
 
 mf::MfClientMgr::~MfClientMgr()
 {
+	DisConnect();
+}
+
+void mf::MfClientMgr::DisConnect()
+{
+	m_lb_idx = 0;
+	m_svr_id = 0;
+	m_grp_id = 0;
+	m_is_coning = false;
 	for (UserClient * p : m_vec_con)
 	{
 		delete p;
 	}
+	m_vec_con.clear();
 }
 
 bool mf::MfClientMgr::Init(const vector<MfAddr> &vec_mf_addr, uint32 svr_id, uint32 group_id)
@@ -152,6 +166,11 @@ bool mf::MfClientMgr::Init(const vector<MfAddr> &vec_mf_addr, uint32 svr_id, uin
 		}
 		m_vec_con.push_back(p);
 	}
+	auto reg_time_out = [&]()//this析构，m_reg_tm也会析构，保证StopTime,不调用野指针
+	{
+		this->OnRegFail();
+	};
+	m_reg_tm.StartTimer(2000, reg_time_out);
 	return true;
 }
 
@@ -249,7 +268,7 @@ mf::UserClient* mf::MfClientMgr::BlSelectSvr()
 			m_lb_idx = 0;
 		}
 		UserClient *client = m_vec_con[m_lb_idx];
-		if (client->IsConnect())
+		if (client->IsReg())
 		{
 			return client;
 		}
