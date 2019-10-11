@@ -45,6 +45,8 @@ function Init()
 	cp mf_svr ./combine_svr -rf
 	mkdir f_test_combine
 	cp test_combine ./f_test_combine -rf
+	mkdir f_test_group
+	cp test_group ./f_test_group -rf
 	mkdir FTestMoreSvr
 	cp test_more_svr ./FTestMoreSvr -rf
 	
@@ -59,6 +61,27 @@ function Init()
 	rm ./f_test_combine/mylog.txt
 	rm ./FTestMoreSvr/log.txt
 	rm ./FTestMoreSvr/lc_log.txt
+}
+
+function TestGroup()
+{
+	KillProcess "./mf_svr"
+	cd combine_svr
+	./mf_svr 
+	cd -
+	
+	sleep 1
+	cd f_test_group
+	./test_group > OutLog.txt
+	cd -
+	sleep 1
+	
+	KillProcess "./mf_svr"
+	echo test_group end
+	
+	grep "ERROR\|error" ./f_test_group/OutLog.txt >>  error.txt  #追加
+	grep "ERROR\|error" ./f_test_group/svr_util_log.txt >>  error.txt 
+	grep "ERROR\|error" ./combine_svr/svr_util_log.txt >>  error.txt 
 }
 
 function TestCombine()
@@ -163,7 +186,8 @@ function TestMoreMfSvr()
 #main follow
 ########################################################################################################
 Init
-TestCombine
+#TestCombine
+TestGroup
 #TestRecon
 #TestMoreMfSvr
 cat error.txt

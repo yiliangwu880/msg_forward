@@ -132,8 +132,7 @@ bool User::SendLcMsg(const lc::MsgPack &msg_pack)
 
 bool User::IsConnect()
 {
-	BaseConMgr &con_mgr = Server::Obj().GetBaseConMgr();
-	SvrCon *pCon = con_mgr.FindConn(m_con_id);
+	SvrCon *pCon = Server::Obj().GetBaseConMgr().FindConn(m_con_id);
 	return pCon != nullptr;
 }
 
