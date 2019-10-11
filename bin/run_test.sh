@@ -137,7 +137,8 @@ function TestRecon()
 	KillProcess test_recon
 	echo TestRecon end
 	cd -
-	grep "ERROR\|error" log.txt >>  error.txt 
+	grep "ERROR\|error" svr_util_log.txt >>  error.txt 
+	grep "ERROR\|error" lc_log.txt >>  error.txt 
 }
 
 function TestMoreMfSvr()
@@ -180,15 +181,16 @@ function TestMoreMfSvr()
 	echo end
 	
 	cd FTestMoreSvr
-	grep "ERROR\|error" log.txt >>  ../error.txt 
+	grep "ERROR\|error" lc_log.txt >>  ../error.txt 
+	grep "ERROR\|error" svr_util_log.txt >>  ../error.txt 
 	cd -
 }
 #main follow
 ########################################################################################################
 Init
 TestCombine
-#TestGroup
-#TestRecon
-#TestMoreMfSvr
+TestGroup
+TestRecon
+TestMoreMfSvr
 cat error.txt
 

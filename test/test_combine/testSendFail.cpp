@@ -68,6 +68,63 @@ namespace
 
 	};
 
+	class U4 : public UserBase, public Singleton<U4>
+	{
+	public:
+		bool m_is_discon;
+		uint32 rev_num;
+		U4()
+			:m_is_discon(false)
+			, rev_num(0)
+		{
+		}
+		virtual ~U4() {}
+	private:
+		virtual void OnCon()
+		{
+			UNIT_INFO("U4 OnCon");
+		}
+		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
+		{
+		}
+		virtual void OnDiscon()
+		{
+			UNIT_INFO("U4 discon");
+			m_is_discon = true;
+		}
+	};
+
+	class U5 : public UserBase, public Singleton<U5>
+	{
+	public:
+		bool m_is_reg_fail;
+		uint32 rev_num;
+		U5()
+			:m_is_reg_fail(false)
+			, rev_num(0)
+		{
+		}
+		virtual ~U5() {}
+	private:
+		virtual void OnCon()
+		{
+			UNIT_INFO("U5 OnCon");
+		}
+		virtual void OnRecv(uint32 src_id, const char *custom_pack, uint16 custom_pack_len)
+		{
+		}
+		virtual void OnDiscon()
+		{
+			UNIT_INFO("U5 discon");
+		}
+		virtual void OnRegFail()
+		{
+			UNIT_INFO("U5 OnRegFail");
+			m_is_reg_fail = true;
+			EventMgr::Obj().StopDispatch();
+		}
+	};
+
 	class U1 : public UserBase, public Singleton<U1>
 	{
 	public:
@@ -108,7 +165,6 @@ namespace
 			else if (dst_id == 3)
 			{
 				m_is_ok = true;
-				EventMgr::Obj().StopDispatch();
 				UNIT_INFO("u3 disconnect, StopDispatch");
 			}
 
@@ -139,6 +195,7 @@ namespace
 			UNIT_ASSERT(src_id == 1);
 			Send(1, "2");
 			UNIT_INFO("u2 rev u1 msg.");
+			U4::Obj().DisConnect();
 		}
 	};
 
@@ -191,18 +248,23 @@ UNITTEST(cd_testSendFail)
 	auto f = []()
 	{
 		UNIT_INFO("start connect");
-		std::vector < MfAddr > repeatVecAddr = CfgMgr::Obj().GetVecAddr();
+		std::vector < MfAddr > vec_addr = CfgMgr::Obj().GetVecAddr();
 		for (auto &v : CfgMgr::Obj().GetVecAddr())
 		{
-			repeatVecAddr.push_back(v);
+			vec_addr.push_back(v);
 		}
-		repeatVecAddr.push_back({ "127.0.0.1", 33454 }); //加个无效的
+		vec_addr.push_back({ "127.0.0.1", 33454 }); //加个无效的
 
 		g_pU2 = new U2;
 		g_pU3 = new U3;
-		g_pU3->Init(repeatVecAddr, 3);
-		g_pU2->Init(repeatVecAddr, 2);
-		U1::Obj().Init(repeatVecAddr, 1);
+		g_pU3->Init(vec_addr, 3);
+		g_pU2->Init(vec_addr, 2);
+		U1::Obj().Init(vec_addr, 1);
+		U4::Obj().Init(vec_addr, 4);
+		vec_addr.clear(); 
+		vec_addr.push_back({ "127.0.0.1", 33454 }); //加个无效的
+		U5::Obj().Init(vec_addr, 5);
+		
 		UNIT_INFO("end connect");
 	};
 	tm.StartTimer(2000, f); //延时运行，等上次测试状态结束
@@ -210,5 +272,7 @@ UNITTEST(cd_testSendFail)
 	EventMgr::Obj().Dispatch();
 
 	UNIT_ASSERT(U1::Obj().m_is_ok);
+	UNIT_ASSERT(U4::Obj().m_is_discon);
+	UNIT_ASSERT(U5::Obj().m_is_reg_fail);
 	UNIT_INFO("cd_testSendFail end");
 }
