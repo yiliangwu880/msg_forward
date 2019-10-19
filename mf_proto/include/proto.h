@@ -58,13 +58,11 @@ namespace mf {
 		//Parse tcp pack
 		//注意：MsgData 成员指向 tcp_pack的内存，tcp_pack释放后，MsgData的指针会野。
 		//@para uint16 tcp_pack_len, 表示tcp_pack有效长度
-		//@para MsgData &msg_data, [out]
 		bool Parse(const char *tcp_pack, uint16 tcp_pack_len);
 
-		//@para[in] const MsgData &msg_data, 
 		//@para[out] std::string &tcp_pack
 		bool Serialize(std::string &tcp_pack) const;
-		//@para[out] uint16 tcp_pack_len, 表示 tcp_pack有效字节数。
+		//@para[in] uint16 tcp_pack_len, 表示 tcp_pack有效字节数。
 		//@para[out] char *tcp_pack
 		//注意：高效，容易越界
 		bool Serialize(char *tcp_pack, uint16 tcp_pack_len) const;
