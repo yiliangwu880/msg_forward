@@ -5,7 +5,9 @@
 		多个客户端之间通讯。
 		客户端之间定义唯一id,到msg_forward注册后就可以互相通讯了。
 		客户端 之间通讯，不需要配置彼此之间的地址,只需要配置msg_forward的地址就能实现通讯。
-	
+
+详细功能说明参考： doc.lua文件	
+
 编译方法：
 	整个文件夹放到linux目录，安装cmake gcc git等。
 
@@ -18,7 +20,6 @@
 vs浏览代码：
 	执行.\vs\run.bat,生成sln文件
 
-功能说明参考： doc.lua文件
 	
 目录结构：
 	mf_svr      ==msg forward server
