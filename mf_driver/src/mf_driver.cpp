@@ -83,9 +83,8 @@ void mf::UserClient::OnRecv(const lc::MsgPack &msg)
 bool mf::UserClient::SendPack(const string &tcp_pack)
 {
 	L_COND_F(!tcp_pack.empty());
-	MsgPack msg_pack;
-	msg_pack.Serialize(tcp_pack);
-	return SendData(msg_pack);
+
+	return lc::ClientCon::SendPack(tcp_pack);
 }
 
 
@@ -188,10 +187,8 @@ bool mf::MfClientMgr::Send(uint32 dst_id, const char *pack, uint16 pack_len)
 
 	string tcp_pack;
 	MsgData::Serialize(CMD_REQ_FORWARD, send, pack, pack_len, tcp_pack);
-	MsgPack msg_pack;
-	msg_pack.Serialize(tcp_pack);
 
-	return client->SendData(msg_pack);
+	return client->SendPack(tcp_pack);
 }
 
 
@@ -208,10 +205,7 @@ bool mf::MfClientMgr::SendGroup(uint32 group_id, const char *pack, uint16 pack_l
 
 	string tcp_pack;
 	MsgData::Serialize(CMD_REQ_BROADCAST, send, pack, pack_len, tcp_pack);
-	MsgPack msg_pack;
-	msg_pack.Serialize(tcp_pack);
-
-	return client->SendData(msg_pack);
+	return client->SendPack(tcp_pack);
 }
 
 

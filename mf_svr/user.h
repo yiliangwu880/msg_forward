@@ -51,6 +51,6 @@ bool User::Send(mf::Cmd cmd, const CtrlMsg &send)
 	std::string tcp_pack;
 	mf::MsgData::Serialize(cmd, send, nullptr, 0, tcp_pack);
 	lc::MsgPack msg_pack;
-	COND_F(msg_pack.Serialize(tcp_pack));
+	COND_F(msg_pack.Set(tcp_pack));
 	return SendLcMsg(msg_pack);
 }

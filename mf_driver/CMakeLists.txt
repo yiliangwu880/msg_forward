@@ -19,4 +19,4 @@ ADD_LIBRARY(mf_driver STATIC ${ALL_SRC_FILE} ${ALL_SRC_FILE2} )
 #cotire(base)
 
 # 设置链接库
-target_link_libraries(mf_driver svr_util libevent_cpp mf_proto libevent.a)
+target_link_libraries(mf_driver svr_util cevent_cpp mf_proto)
