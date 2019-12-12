@@ -28,7 +28,11 @@ private:
 
 void OnExitProccess()
 {
-	L_DEBUG("OnExitProccess");
+	if (SingleProgress::Obj().IsExit())
+	{
+		L_INFO("============stop proccess============");
+		lc::EventMgr::Obj().StopDispatch();
+	}
 }
 
 namespace {
@@ -38,6 +42,11 @@ namespace {
 			static lc::Timer loop_tm;
 			auto fun = std::bind(&SuMgr::OnTimer, &SuMgr::Obj());
 			L_COND_F(loop_tm.StartTimer(30, fun, true));
+		}
+		{//驱动su::timer
+			static lc::Timer loop_tm;
+			auto fun = std::bind(OnExitProccess);
+			L_COND_F(loop_tm.StartTimer(1000, fun, true));
 		}
 
 		MsgDispatch::Obj().Init();
@@ -73,7 +82,7 @@ int main(int argc, char* argv[])
 	SuMgr::Obj().Init();
 
 	//start or stop proccess
-	SPMgr::Obj().Check(argc, argv, "mf_svr", OnExitProccess);
+	SingleProgress::Obj().Check(argc, argv, "mf_svr");
 
 	lc::EventMgr::Obj().Init(&MyLog::Obj());
 	lc::EventMgr::Obj().RegSignal(SIGUSR1, SignalCB);
