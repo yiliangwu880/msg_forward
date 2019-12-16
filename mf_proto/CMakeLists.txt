@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 2.8)
 # 项目信息
 project (mf_proto CXX)
 
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/mf_proto/lib)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 INCLUDE_DIRECTORIES(system ${PROJECT_SOURCE_DIR}/include)
 
 # 查找当前目录下的所有源文件

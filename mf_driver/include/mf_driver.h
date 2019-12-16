@@ -103,13 +103,15 @@ namespace mf {
 		uint32 GetGrpId() const { return m_grp_id; }
 		//断开连接
 		void DisConnect();
+		//true表示已连接任意一台mf svr
+		bool IsCon() const { return m_is_coning; }
 	private:
 		void OnOneMfDiscon(); //其中一个mf链接失败
 		UserClient* BlSelectSvr(); //负载均衡一台mf svr
 
 	private:
 		//注册失败回调。通常是没有mf_svr,或者svr_id已经被注册
-		virtual void OnRegFail() {};
+		virtual void OnRegFail();
 		//反馈连接mf svr list 情况。连接任意第一台都算成功。
 		//连接已成功的情况，再连接第N台，不会回调。
 		virtual void OnCon() = 0;

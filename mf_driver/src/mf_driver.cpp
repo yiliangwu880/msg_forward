@@ -270,3 +270,8 @@ mf::UserClient* mf::MfClientMgr::BlSelectSvr()
 	L_ERROR("all mf client disconnect");
 	return nullptr;
 }
+
+void mf::MfClientMgr::OnRegFail()
+{
+	L_FATAL("reg mf fail, svr_id=%x", m_svr_id);
+}
