@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 2.8)
 # 项目信息
 project (mf_driver CXX)
 
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/mf_driver/lib)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 INCLUDE_DIRECTORIES(system ${PROJECT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(system ../External/)
